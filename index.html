@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sourcing &amp; Nurturing Agent — Concept Document</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14282f;
+  --ink-soft:#3d5259;
+  --paper:#f1f5f3;
+  --card:#ffffff;
+  --line:#d7e0dc;
+  --teal:#17706b;
+  --teal-deep:#0e4d49;
+  --amber:#d9a13b;
+  --amber-deep:#a9761f;
+  --coral:#c0563f;
+  --ring1:#0e4d49; --ring2:#17706b; --ring3:#4f9d92; --ring4:#a8cec5;
+  --maxw:1160px;
+  --serif:'Source Serif 4', Georgia, serif;
+  --disp:'Bricolage Grotesque', system-ui, sans-serif;
+  --mono:'Spline Sans Mono', ui-monospace, monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+::selection{background:var(--amber);color:var(--ink)}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(241,245,243,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:var(--maxw);margin:0 auto;padding:.7rem 1.5rem;display:flex;align-items:center;gap:1rem;justify-content:space-between}
+.brand{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.brand b{color:var(--teal-deep)}
+.topnav{display:flex;gap:1.1rem;flex-wrap:wrap}
+.topnav a{font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.topnav a:hover{color:var(--teal-deep);text-decoration:none}
+
+/* ---------- hero ---------- */
+.hero{max-width:var(--maxw);margin:0 auto;padding:4.5rem 1.5rem 3.5rem;display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center}
+.doc-eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-deep);margin-bottom:1.2rem;display:flex;align-items:center;gap:.6rem}
+.doc-eyebrow::before{content:"";width:34px;height:2px;background:var(--amber)}
+h1{font-family:var(--disp);font-weight:800;font-size:clamp(2.6rem,5.2vw,4.3rem);line-height:1.02;letter-spacing:-.02em;color:var(--ink)}
+h1 .accent{color:var(--teal)}
+.hero-thesis{margin-top:1.4rem;font-size:1.18rem;line-height:1.6;color:var(--ink-soft);max-width:34em}
+.hero-thesis strong{color:var(--ink);font-weight:600}
+.hero-meta{margin-top:1.8rem;display:flex;gap:2rem;flex-wrap:wrap}
+.hero-meta div{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--ink-soft)}
+.hero-meta span{display:block;color:var(--teal-deep);font-weight:600;margin-top:.15rem}
+
+/* rings */
+.rings-wrap{position:relative;display:flex;justify-content:center}
+.rings{width:min(400px,100%);height:auto}
+.ring-ping{transform-origin:center;animation:ping 4.5s ease-out infinite}
+@keyframes ping{0%{opacity:.55;transform:scale(.32)}80%{opacity:0;transform:scale(1.04)}100%{opacity:0;transform:scale(1.04)}}
+@media (prefers-reduced-motion: reduce){.ring-ping{animation:none;opacity:0}}
+.rings-caption{position:absolute;bottom:-.4rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+
+/* boundary strip */
+.boundary{background:var(--ink);color:#e9f0ee}
+.boundary-inner{max-width:var(--maxw);margin:0 auto;padding:1.6rem 1.5rem;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start}
+.boundary-tag{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber);padding:.35rem .7rem;border-radius:999px;white-space:nowrap;margin-top:.15rem}
+.boundary p{font-size:1rem;line-height:1.6;color:#c8d6d2;max-width:62em}
+.boundary p strong{color:#fff}
+
+/* ---------- sections ---------- */
+.section{max-width:var(--maxw);margin:0 auto;padding:4.2rem 1.5rem 1rem}
+.sec-head{display:grid;grid-template-columns:auto 1fr;gap:1.4rem;align-items:baseline;border-top:2px solid var(--ink);padding-top:1.2rem;margin-bottom:2rem}
+.sec-num{font-family:var(--mono);font-size:.8rem;font-weight:600;letter-spacing:.1em;color:var(--amber-deep)}
+h2{font-family:var(--disp);font-weight:700;font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.015em;line-height:1.1}
+.sec-intro{font-size:1.06rem;color:var(--ink-soft);max-width:52em;margin-bottom:2.2rem}
+h3{font-family:var(--disp);font-weight:600;font-size:1.22rem;letter-spacing:-.01em;margin:2.2rem 0 .7rem}
+p{margin-bottom:1rem;max-width:70em}
+em{font-style:italic}
+
+/* evidence cards */
+.evidence-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:1.1rem}
+.ev-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.5rem 1.5rem 1.3rem;display:flex;flex-direction:column;gap:.55rem;position:relative;overflow:hidden}
+.ev-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--teal)}
+.ev-num{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-deep)}
+.ev-stat{font-family:var(--disp);font-weight:800;font-size:2.1rem;line-height:1;color:var(--teal-deep)}
+.ev-stat small{font-size:1rem;font-weight:600;color:var(--ink-soft)}
+.ev-title{font-family:var(--disp);font-weight:600;font-size:1.02rem;line-height:1.3}
+.ev-body{font-size:.92rem;line-height:1.55;color:var(--ink-soft)}
+.ev-src{font-family:var(--mono);font-size:.66rem;letter-spacing:.05em;color:var(--ink-soft);margin-top:auto;padding-top:.5rem;border-top:1px dashed var(--line)}
+.ev-note{margin-top:1.4rem;background:#eaf0ee;border-left:3px solid var(--amber);padding:1rem 1.3rem;font-size:.92rem;color:var(--ink-soft);border-radius:0 8px 8px 0;max-width:62em}
+
+/* capabilities */
+.cap{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.9rem 2rem;margin-bottom:1.2rem;display:grid;grid-template-columns:52px 1fr;gap:1.4rem}
+.cap-badge{width:52px;height:52px;border-radius:50%;background:var(--teal-deep);color:#fff;font-family:var(--disp);font-weight:700;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+.cap h3{margin-top:0}
+.cap p{font-size:.98rem;color:var(--ink-soft)}
+.psy{margin-top:.9rem;display:flex;flex-wrap:wrap;gap:.45rem}
+.psy span{font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;background:#eef4f1;border:1px solid var(--line);color:var(--teal-deep);padding:.32rem .65rem;border-radius:999px}
+.psy-detail{margin-top:.8rem;font-size:.9rem;color:var(--ink-soft)}
+.psy-detail li{margin:.35rem 0 .35rem 1.1rem}
+.psy-detail em{color:var(--ink);font-style:normal;font-weight:600}
+details.psy-more summary{cursor:pointer;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);margin-top:.7rem;list-style:none}
+details.psy-more summary::before{content:"+ ";color:var(--amber-deep)}
+details.psy-more[open] summary::before{content:"− "}
+
+/* channel sequencing */
+.sequence{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:0;margin:1.8rem 0 1rem;counter-reset:seq}
+.seq-step{background:var(--card);border:1px solid var(--line);padding:1.3rem 1.3rem 1.1rem;position:relative}
+.seq-step:first-child{border-radius:10px 0 0 10px}
+.seq-step:last-child{border-radius:0 10px 10px 0}
+.seq-step + .seq-step{border-left:none}
+.seq-step::after{content:"→";position:absolute;right:-.62rem;top:50%;transform:translateY(-50%);z-index:2;font-family:var(--disp);font-weight:700;color:var(--amber-deep);background:var(--paper);border-radius:50%;width:1.25rem;height:1.25rem;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.seq-step:last-child::after{content:none}
+.seq-k{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-deep)}
+.seq-t{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin:.3rem 0 .3rem}
+.seq-d{font-size:.85rem;line-height:1.5;color:var(--ink-soft)}
+.dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;margin-right:.4rem;vertical-align:baseline}
+
+/* two-col channel blocks */
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.7rem 1.8rem}
+.panel h3{margin-top:0}
+.panel p, .panel li{font-size:.95rem;color:var(--ink-soft)}
+.panel ul{margin:.6rem 0 .8rem 1.15rem}
+.panel li{margin-bottom:.5rem}
+.panel li b{color:var(--ink)}
+
+/* orchestration */
+.orch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1rem;margin-top:.5rem}
+.orch{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.2rem 1.3rem}
+.orch h4{font-family:var(--disp);font-weight:600;font-size:.98rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.orch h4::before{content:"";width:8px;height:8px;border-radius:2px;background:var(--teal);flex:none}
+.orch p{font-size:.88rem;line-height:1.55;color:var(--ink-soft);margin:0}
+.orch-never{margin-top:1.6rem;background:var(--ink);color:#dfe9e6;border-radius:12px;padding:1.5rem 1.8rem;max-width:100%}
+.orch-never h4{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--coral);margin-bottom:.5rem}
+.orch-never p{color:#c8d6d2;font-size:.95rem;margin:0}
+.orch-never p strong{color:#fff}
+
+/* automation boundary */
+.four-q{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;margin:1.2rem 0 1.8rem}
+.q{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.2rem}
+.q b{font-family:var(--disp);font-size:.95rem;display:block;margin-bottom:.3rem}
+.q p{font-size:.85rem;color:var(--ink-soft);margin:0}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(255px,1fr));gap:1rem}
+.mode{border-radius:12px;padding:1.5rem 1.5rem;border:1px solid var(--line);background:var(--card)}
+.mode .tag{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;padding:.3rem .6rem;border-radius:999px;display:inline-block;margin-bottom:.7rem}
+.mode h4{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+.mode ul{margin-left:1.05rem}
+.mode li{font-size:.85rem;color:var(--ink-soft);margin-bottom:.4rem}
+.m-auto .tag{background:#e2efe9;color:var(--teal-deep)}
+.m-auto{border-top:4px solid var(--teal)}
+.m-draft .tag{background:#f6ecd8;color:var(--amber-deep)}
+.m-draft{border-top:4px solid var(--amber)}
+.m-human .tag{background:#f4e2dd;color:var(--coral)}
+.m-human{border-top:4px solid var(--coral)}
+.m-exc .tag{background:#e7e9f2;color:#4a5680}
+.m-exc{border-top:4px solid #6c7bb0}
+.earned{margin-top:1.6rem;background:#eaf0ee;border-radius:12px;padding:1.5rem 1.8rem;max-width:100%}
+.earned h4{font-family:var(--disp);font-weight:700;font-size:1.05rem;margin-bottom:.5rem}
+.earned p{font-size:.95rem;color:var(--ink-soft);margin-bottom:.6rem}
+.earned p:last-child{margin:0}
+
+/* build */
+.arch-list{margin:.4rem 0 1rem 1.15rem}
+.arch-list li{margin-bottom:.6rem;font-size:.95rem;color:var(--ink-soft)}
+.arch-list b{color:var(--ink)}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.9rem;margin-top:1rem}
+.phase{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1.1rem 1.15rem;position:relative}
+.phase::before{content:attr(data-p);font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:var(--amber-deep);text-transform:uppercase}
+.phase h5{font-family:var(--disp);font-size:.95rem;font-weight:700;margin:.3rem 0 .35rem}
+.phase p{font-size:.82rem;color:var(--ink-soft);margin:0;line-height:1.5}
+
+/* closing */
+.closing{background:var(--ink);margin-top:4.5rem}
+.closing-inner{max-width:var(--maxw);margin:0 auto;padding:4rem 1.5rem}
+.closing .doc-eyebrow{color:var(--amber)}
+.closing .doc-eyebrow::before{background:var(--amber)}
+.closing blockquote{font-family:var(--disp);font-weight:500;font-size:clamp(1.25rem,2.4vw,1.7rem);line-height:1.45;color:#eef4f1;max-width:46em;letter-spacing:-.01em}
+.closing blockquote b{color:var(--amber);font-weight:700}
+.foot{max-width:var(--maxw);margin:0 auto;padding:1.4rem 1.5rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;padding-top:3rem;gap:2.2rem}
+  .rings-wrap{order:-1}
+  .boundary-inner{grid-template-columns:1fr}
+  .twocol{grid-template-columns:1fr}
+  .cap{grid-template-columns:1fr;gap:.8rem}
+  .seq-step{border-radius:10px !important;border-left:1px solid var(--line) !important;margin-bottom:.5rem}
+  .seq-step::after{content:"↓";right:auto;left:50%;top:auto;bottom:-.9rem;transform:translateX(-50%)}
+  .topnav{display:none}
+}
+@media print{
+  .topbar{position:static}
+  .ring-ping{display:none}
+  body{background:#fff}
+}
+
+/* ---------- executive view ---------- */
+.exec-toggle{font-family:var(--disp);font-weight:700;font-size:.74rem;letter-spacing:.02em;border:1.5px solid var(--teal-deep);color:var(--teal-deep);background:transparent;border-radius:999px;padding:.42rem .95rem;cursor:pointer;white-space:nowrap;transition:all .15s}
+.exec-toggle:hover{background:var(--teal-deep);color:#fff}
+body.exec .exec-toggle{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+#execView{display:none;max-width:var(--maxw);margin:0 auto;padding:2.5rem 1.5rem 3rem}
+body.exec #execView{display:block}
+body.exec .hero,body.exec .boundary,body.exec .section,body.exec .closing,body.exec .foot{display:none}
+body.exec .topnav{display:none}
+.xh{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;margin-bottom:2rem}
+.xh h1{font-size:clamp(2rem,4.5vw,3.2rem)}
+.x-one{font-size:1.12rem;color:var(--ink-soft);max-width:36em;margin-top:.8rem}
+.x-one b{color:var(--ink)}
+.x-label{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-deep);margin:2.2rem 0 .9rem;display:flex;align-items:center;gap:.6rem}
+.x-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.x-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.9rem}
+.x-stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.3rem;border-top:3px solid var(--coral)}
+.x-stat .n{font-family:var(--disp);font-weight:800;font-size:2rem;line-height:1;color:var(--ink)}
+.x-stat .d{font-size:.82rem;color:var(--ink-soft);margin-top:.4rem;line-height:1.4}
+.x-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:.9rem}
+.x-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.1rem 1.2rem}
+.x-card .k{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-deep)}
+.x-card h4{font-family:var(--disp);font-weight:700;font-size:1rem;margin:.3rem 0 .25rem}
+.x-card p{font-size:.82rem;color:var(--ink-soft);margin:0;line-height:1.45}
+.x-flow{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+.x-step{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:.5rem 1rem;font-family:var(--disp);font-weight:600;font-size:.85rem;white-space:nowrap}
+.x-step.hot{background:var(--teal-deep);color:#fff;border-color:var(--teal-deep)}
+.x-arrow{color:var(--amber-deep);font-weight:700}
+.x-two{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.x-levels{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem}
+.x-close{margin-top:2.4rem;background:var(--ink);border-radius:14px;padding:1.8rem 2rem}
+.x-close p{font-family:var(--disp);font-weight:500;font-size:1.15rem;line-height:1.5;color:#eef4f1;margin:0;max-width:52em}
+.x-close b{color:var(--amber)}
+.x-floor{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--ink-soft);margin-top:.9rem}
+@media (max-width:760px){.x-two,.x-levels{grid-template-columns:1fr}}
+@media print{body.exec #execView{display:block}}
+
+
+/* ---------- left navigation rail ---------- */
+.leftnav{position:fixed;top:50%;left:1.1rem;transform:translateY(-50%);z-index:60;display:none;flex-direction:column;gap:.15rem;max-width:178px}
+.leftnav a{display:flex;align-items:baseline;gap:.55rem;padding:.38rem .6rem;border-radius:8px;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);text-decoration:none;border-left:2px solid transparent;line-height:1.35}
+.leftnav a .no{color:var(--amber-deep);font-weight:600;min-width:1.3em}
+.leftnav a:hover{color:var(--teal-deep);background:rgba(23,112,107,.07);text-decoration:none}
+.leftnav a.on{color:var(--teal-deep);border-left-color:var(--amber);background:rgba(23,112,107,.08);font-weight:600}
+@media (min-width:1560px){
+  .leftnav{display:flex}
+  .topnav{display:none}
+}
+body.exec .leftnav{display:none}
+@media print{.leftnav{display:none}}
+
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><b>CONCEPT</b> · SOURCING &amp; NURTURING AGENT · v1.1</div>
+    <button class="exec-toggle" id="execToggle">&#9889; Exec view</button>
+    <nav class="topnav">
+      <a href="#why">Why now</a>
+      <a href="#vision">Vision</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#channels">Channels</a>
+      <a href="#orchestration">Orchestration</a>
+      <a href="#autonomy">Autonomy</a>
+      <a href="#modes">Hiring modes</a>
+      <a href="#build">Build</a>
+      <a href="#buildability">Buildability</a>
+    </nav>
+  </div>
+</div>
+
+
+
+<nav class="leftnav" id="leftNav" data-cw="1" aria-label="Sections">
+  <a href="#why"><span class="no">01</span>Why now</a>
+  <a href="#vision"><span class="no">02</span>Vision</a>
+  <a href="#capabilities"><span class="no">03</span>Capabilities</a>
+  <a href="#channels"><span class="no">04</span>Channels</a>
+  <a href="#orchestration"><span class="no">05</span>Orchestration</a>
+  <a href="#autonomy"><span class="no">06</span>Autonomy</a>
+  <a href="#modes"><span class="no">07</span>Hiring modes</a>
+  <a href="#build"><span class="no">08</span>Build</a>
+  <a href="#buildability"><span class="no">09</span>Buildability</a>
+</nav>
+
+<!-- ================= EXECUTIVE VIEW ================= -->
+<div id="execView">
+  <div class="xh">
+    <div>
+      <div class="doc-eyebrow">Executive brief · 2-minute read</div>
+      <h1>The Sourcing &amp; Nurturing Agent</h1>
+      <p class="x-one">An AI agent that <b>fishes our own pond — before roles even open.</b> It reactivates the talent we already own, screens and schedules autonomously, and keeps a human approving every word candidates or the public see.</p>
+    </div>
+  </div>
+
+  <div class="x-label">Why now — the money we're leaving on the table</div>
+  <div class="x-stats">
+    <div class="x-stat"><div class="n">~75%</div><div class="d">of candidates in a typical ATS are never contacted again — a paid-for pipeline sitting idle</div></div>
+    <div class="x-stat"><div class="n">$5,475</div><div class="d">average cost per hire (execs: ~$36K), and 60–70% of it is process, not talent</div></div>
+    <div class="x-stat"><div class="n">30% vs 7%</div><div class="d">referral hire rate vs. other channels — our best channel is our worst-activated</div></div>
+    <div class="x-stat"><div class="n">88%</div><div class="d">of HR leaders see no AI value yet — point tools fail; a governed full-funnel agent is the play</div></div>
+  </div>
+
+  <div class="x-label">What it does — inside-out, warmest first</div>
+  <div class="x-flow">
+    <span class="x-step hot">1 · Internal mobility</span><span class="x-arrow">&rarr;</span>
+    <span class="x-step">2 · Employee referrals</span><span class="x-arrow">&rarr;</span>
+    <span class="x-step">3 · Our talent pool</span><span class="x-arrow">&rarr;</span>
+    <span class="x-step">4 · Content-driven demand</span>
+  </div>
+  <div class="x-grid" style="margin-top:.9rem">
+    <div class="x-card"><span class="k">Find</span><h4>Rediscover &amp; nurture</h4><p>Forecasts roles before reqs exist; warms predicted-need talent at scale — and nudges recruiters to personally call the stars before the req even opens.</p></div>
+    <div class="x-card"><span class="k">Screen</span><h4>AI Interviewer <em>(exists today)</em></h4><p>Runs the recruiter screen the moment interest lands — sells the job while evaluating. 10 minutes, not a 3-day queue.</p></div>
+    <div class="x-card"><span class="k">Book</span><h4>Scheduling agent</h4><p>Books the HM interview in minutes at peak engagement — and negotiates 1:1 with interviewers to open slots for high-value candidates.</p></div>
+    <div class="x-card"><span class="k">Learn</span><h4>Insights &amp; advocacy</h4><p>Shows where the funnel leaks; when the pool runs thin, hands the right employees ready-to-post stories with tracked attribution.</p></div>
+  </div>
+
+  <div class="x-label">Why we win</div>
+  <div class="x-grid">
+    <div class="x-card"><h4>Internal-only</h4><p>No LinkedIn scraping, no external API risk, no data leaving the tenant. The moat is the database we already own.</p></div>
+    <div class="x-card"><h4>Works with what you have</h4><p>Full value on the ATS alone. Talent Management unlocks the internal ring; Workforce Readiness makes forecasting board-grade. <b>Degrades, never breaks.</b></p></div>
+    <div class="x-card"><h4>Foundation is built</h4><p>Matching, campaigns, scheduling primitives, and the AI Interviewer exist. <b>Records &amp; rails exist; agency is the build.</b></p></div>
+  </div>
+
+  <div class="x-label">Control — one switchboard, three settings</div>
+  <div class="x-levels">
+    <div class="x-card" style="border-top:3px solid var(--coral)"><h4>Recommend</h4><p>Agent thinks, humans act. Launch mode.</p></div>
+    <div class="x-card" style="border-top:3px solid var(--amber)"><h4>Review <em>(default)</em></h4><p>Agent executes logistics; humans approve everything visible.</p></div>
+    <div class="x-card" style="border-top:3px solid var(--teal)"><h4>Run</h4><p>Proven playbooks run end-to-end, inside spend &amp; volume budgets.</p></div>
+  </div>
+  <div class="x-floor">&#128274; At every level: rejections, HM-voice sends, and anything public stay human. Always.</div>
+
+  <div class="x-label">One agent, both markets</div>
+  <div class="x-two">
+    <div class="x-card"><span class="k">High-volume</span><h4>The throughput engine</h4><p>Screen everyone instantly, self-serve scheduling, rehire pools, hiring days. Runs at full autonomy. Wins on time-to-start and cost per hire.</p></div>
+    <div class="x-card"><span class="k">Knowledge-based</span><h4>The courtship engine</h4><p>Warm intros, HM-voice outreach, slot negotiation, years-long nurture. Runs reviewed. Wins on offer-accept and quality of hire.</p></div>
+  </div>
+
+  <div class="x-close">
+    <p>Every candidate in our database already raised their hand once. This agent makes sure we never waste that again — <b>starting with our own people, moving at the speed candidates decide, with a human owning every judgment call.</b></p>
+  </div>
+</div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div>
+    <div class="doc-eyebrow">Concept document · Talent Acquisition · July 2026</div>
+    <h1>The Sourcing &amp; Nurturing Agent.<br><span class="accent">Fish your own pond — before the role opens.</span></h1>
+    <p class="hero-thesis">An autonomous, human-supervised agent that reactivates the talent a company <strong>already owns</strong> — its ATS database, its employees, and their networks — then screens, schedules, and reports on it. <strong>Warmest, cheapest, highest-trust channels first.</strong> A person approves every word a candidate or the public ever sees.</p>
+    <div class="hero-meta">
+      <div>SEARCH ORDER<span>Inner rings first</span></div>
+      <div>HUMAN IN THE LOOP<span>Every visible word</span></div>
+      <div>PSYCHOLOGY<span>Designed in, not bolted on</span></div>
+    </div>
+  </div>
+
+  <div class="rings-wrap">
+    <svg class="rings" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Concentric rings showing the sourcing order: internal candidates, then referrals, then the owned talent pool, then content-driven demand">
+      <circle cx="210" cy="210" r="196" fill="none" stroke="var(--ring4)" stroke-width="2" stroke-dasharray="3 6"/>
+      <circle cx="210" cy="210" r="196" fill="var(--ring4)" opacity=".14"/>
+      <circle cx="210" cy="210" r="148" fill="var(--ring3)" opacity=".18"/>
+      <circle cx="210" cy="210" r="148" fill="none" stroke="var(--ring3)" stroke-width="1.5"/>
+      <circle cx="210" cy="210" r="100" fill="var(--ring2)" opacity=".22"/>
+      <circle cx="210" cy="210" r="100" fill="none" stroke="var(--ring2)" stroke-width="1.5"/>
+      <circle cx="210" cy="210" r="52" fill="var(--ring1)"/>
+      <circle class="ring-ping" cx="210" cy="210" r="196" fill="none" stroke="var(--teal)" stroke-width="2"/>
+      <text x="210" y="204" text-anchor="middle" fill="#fff" font-family="Bricolage Grotesque, sans-serif" font-weight="700" font-size="15">1 · Internal</text>
+      <text x="210" y="222" text-anchor="middle" fill="#cfe4df" font-family="Spline Sans Mono, monospace" font-size="9" letter-spacing="1">MOBILITY</text>
+      <text x="210" y="132" text-anchor="middle" fill="var(--teal-deep)" font-family="Bricolage Grotesque, sans-serif" font-weight="600" font-size="13">2 · Referrals</text>
+      <text x="210" y="84" text-anchor="middle" fill="var(--teal-deep)" font-family="Bricolage Grotesque, sans-serif" font-weight="600" font-size="13">3 · Talent pool</text>
+      <text x="210" y="36" text-anchor="middle" fill="var(--ink-soft)" font-family="Bricolage Grotesque, sans-serif" font-weight="600" font-size="13">4 · Content-driven demand</text>
+    </svg>
+    <div class="rings-caption">The charter sequence · every new role, inside out</div>
+  </div>
+</header>
+
+<!-- boundary strip -->
+<div class="boundary">
+  <div class="boundary-inner">
+    <div class="boundary-tag">Explicit boundary</div>
+    <p><strong>This is not a LinkedIn sourcing agent.</strong> It does not scrape, automate, or send outreach through LinkedIn — automated activity there violates its terms of service and creates account and legal risk. The strategic bet is the opposite: every candidate in the owned database has already raised their hand once. The agent reactivates that audience, and touches external networks only through human-published content it drafts.</p>
+  </div>
+</div>
+
+<!-- ================= 01 WHY ================= -->
+<section class="section" id="why">
+  <div class="sec-head"><div class="sec-num">01</div><h2>Why now — five problems, with the evidence</h2></div>
+  <p class="sec-intro">Every capability answers a specific, measurable failure in how sourcing works today.</p>
+
+  <div class="evidence-grid">
+    <div class="ev-card">
+      <div class="ev-num">Problem 01 · Cost &amp; drag</div>
+      <div class="ev-stat">$5,475 <small>per hire — 60–70% of it process</small></div>
+      <div class="ev-title">Hiring cost is mostly coordination drag — and candidates walk because of it.</div>
+      <div class="ev-body">Executive hires run ~$36K (up 21% since 2022); vacancy drag ~$500/day. 67% of recruiters spend 30 min–2 hrs scheduling a single interview, ~17.7 hrs of admin per vacancy — and 28% of jobseekers abandon over delays, which selects against the best candidates.</div>
+      <div class="ev-src">SHRM 2025 · Yello · GoodTime · Totaljobs</div>
+    </div>
+    <div class="ev-card">
+      <div class="ev-num">Problem 02 · Waste</div>
+      <div class="ev-stat">~75% <small>of ATS records never re-contacted</small></div>
+      <div class="ev-title">The database companies already paid for sits idle.</div>
+      <div class="ev-body">~44% of great hires already exist in the company's own ATS; rediscovered candidates convert ~3x faster than cold prospects. Companies that operationalized rediscovery grew dormant-database hires from ~26% (2021) to ~46% (2024).</div>
+      <div class="ev-src">iCIMS · SeekOut · Greenhouse</div>
+    </div>
+    <div class="ev-card">
+      <div class="ev-num">Problem 03 · Attrition</div>
+      <div class="ev-stat">64% vs 45% <small>3-yr retention, moved vs not</small></div>
+      <div class="ev-title">Internal talent leaves because nobody showed them a path.</div>
+      <div class="ev-body">Only 15% of employees say their organization ever encouraged an internal move; over 40% of quitters cite lack of career progression. On Eightfold customer data the ceiling is visible: 63% of hires internal or re-recruited, 75% more internal transfers — the agent makes that the norm, not the best case.</div>
+      <div class="ev-src">LinkedIn · McKinsey · Eightfold customer data</div>
+    </div>
+    <div class="ev-card">
+      <div class="ev-num">Problem 04 · Activation</div>
+      <div class="ev-stat">30% vs 7% <small>referral vs other hire rate</small></div>
+      <div class="ev-title">Referrals are the best channel and the worst-activated.</div>
+      <div class="ev-body">Referral hires stay ~70% longer and cut backfill costs ~41% — yet referrals are only ~7% of applicants, because programs rely on employees spontaneously remembering open roles.</div>
+      <div class="ev-src">Jobvite · iCIMS</div>
+    </div>
+    <div class="ev-card">
+      <div class="ev-num">Problem 05 · Adoption</div>
+      <div class="ev-stat">88% <small>of HR leaders see no AI value yet</small></div>
+      <div class="ev-title">AI recruiting fails without orchestration and oversight.</div>
+      <div class="ev-body">Organizations deploying AI across the <em>whole</em> funnel see ~33% reductions in time- and cost-per-hire. Point tools disappoint; a governed full-funnel agent pays. This charter is a design for the second.</div>
+      <div class="ev-src">Gartner 2025 · DemandSage 2026</div>
+    </div>
+  </div>
+
+  <div class="ev-note"><b>A note on the evidence.</b> SHRM and LinkedIn benchmarks are methodologically solid; some channel statistics originate from vendors with an interest in the conclusion. Where figures conflict, this document uses the conservative end — and the agent's own insights layer should replace industry benchmarks with the organization's measured numbers within two quarters of launch.</div>
+</section>
+
+<!-- ================= 02 VISION ================= -->
+<section class="section" id="vision">
+  <div class="sec-head"><div class="sec-num">02</div><h2>The vision: a hierarchical, anticipatory agent</h2></div>
+  <p class="sec-intro">Not one agent — a hierarchy. Workforce readiness → proactive pipeline building → intelligent sourcing, entirely on internal data, no external API dependency. Each level speaks to a different buyer and works a different time horizon; execution starts at the bottom, the vision sells from the top.</p>
+
+  <div class="modes">
+    <div class="mode m-auto">
+      <span class="tag">Top level · CHRO &amp; C-suite</span>
+      <h4>Company-wide forecasting agent</h4>
+      <ul>
+        <li>Connects to <b>Workforce Readiness</b>; monitors ATS + talent pool</li>
+        <li>Tracks future role demand, churn trends, completion rates</li>
+        <li>Predicts openings <em>before</em> a requisition exists</li>
+        <li>Workforce planning that acts, not just reports — the "visionary" buy</li>
+      </ul>
+    </div>
+    <div class="mode m-draft">
+      <span class="tag">Mid level · Heads of TA</span>
+      <h4>Job-function-specific sourcing</h4>
+      <ul>
+        <li>Targets high-churn, high-volume functions proactively — engineering, volume hiring</li>
+        <li>Standing pipeline programs per function, not per role</li>
+        <li>Converts the forecasting signal into function-level nurture</li>
+      </ul>
+    </div>
+    <div class="mode m-exc">
+      <span class="tag">Bottom level · Recruiters &amp; HMs</span>
+      <h4>Role-level intelligent sourcing</h4>
+      <ul>
+        <li>Fill a specific open role — no education needed</li>
+        <li>Everyone already understands this layer</li>
+        <li>Where adoption and execution start, even though the vision is sold top-down</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="max-width:62em;color:var(--ink-soft);font-size:.98rem"><b>Nurturing is the strategic addition:</b> the pool is fished <em>before</em> the requisition exists — a candidate touched a few times over six months by useful, no-ask content reads the eventual fishing email as a familiar contact, not a cold one.</p>
+
+  <div class="twocol" style="margin-top:1.4rem">
+    <div class="panel">
+      <h3>The superpower — works with what you have</h3>
+      <ul>
+        <li><b>Internal-only:</b> no external API dependency, no platform ToS risk, no data leaving the tenant.</li>
+        <li><b>Core — ATS alone (every customer):</b> rediscovery, fishing, AI Interviewer, scheduling, referrals, insights, advocacy all run on the ATS and talent pool. Forecasting degrades gracefully to ATS-derived demand signals (req history, funnel velocity, seasonality).</li>
+        <li><b>+ Talent Management (optional):</b> unlocks the internal ring — and makes the agent a conductor of agents that already exist: internal outreach routes through <b>Career Coach</b> in Career Hub, <b>Digital Twin's</b> live work signals sharpen moment detection for nudges and advocacy, <b>succession benches</b> give leadership roles a pre-vetted fast path, and <b>redeployment</b> events feed the forecast as urgent supply. Without TM, the sequence starts at referrals.</li>
+        <li><b>+ Workforce Readiness (optional, within TM):</b> premium forecasting — AI Potential, AI Adoption, Transformation Gap by role/function/location — prediction, not trend extrapolation.</li>
+        <li><b>Entitlement-aware:</b> the scope switchboard shows unlicensed capabilities as upgrade paths, never broken toggles. <b>Capabilities degrade, never break.</b></li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Conversational intelligence layer</h3>
+      <ul>
+        <li><b>Human pacing:</b> a WhatsApp thumbs-up gets a beat of silence before a natural reply — mirroring human rhythm is itself a trust signal.</li>
+        <li><b>Friction framing:</b> "a 10-minute screening" converts where "a 30-minute interview" doesn't; the perceived ask determines the yes.</li>
+        <li><b>Auto-budgeting:</b> configurable volume and spend limits on AI automation per role, function, and company — autonomy always inside a leadership-visible envelope.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="max-width:62em;color:var(--ink-soft);font-size:.92rem"><b>Packaging (open questions):</b> the tiers are the narrative — <b>Core</b> (TA) · <b>+ Internal</b> (TM) · <b>+ Anticipatory</b> (Workforce Readiness + succession) — mapped to entitlements customers already own, not new SKUs. To settle: TA SKU vs. a <b>Talent Agents suite</b> with AI Interviewer and Career Coach (this agent is the orchestrator that makes the others compound); whether a TM-lite internal-sourcing add-on is needed; and where Digital Twin sits, since moment detection depends on it.</p>
+
+  <h3>The channel strategy: right message, right pipe, right person</h3>
+  <p style="max-width:62em;color:var(--ink-soft);font-size:.98rem">Three principles decide every route. <b>Meet people where they respond</b> — channel is learned per person: observed behavior &gt; declared preference &gt; sensible default. <b>Message weight matches channel weight</b> — substance travels on email; logistics travel on chat/text; consequential news never arrives in a lightweight channel. <b>Explicit preference wins forever</b> — and every channel feeds one contact ledger: one conversation, whatever the pipe.</p>
+  <div class="twocol" style="margin-top:1.1rem">
+    <div class="panel">
+      <h3>External — candidates</h3>
+      <ul>
+        <li><b>Email = default &amp; system of record:</b> first touch and anything with substance, always.</li>
+        <li><b>SMS / WhatsApp = speed channels, after opt-in</b> (captured at pool-entry or in-screen by the AI Interviewer): confirms, reminders, quick nudges — WhatsApp chosen geo-aware where it dominates.</li>
+        <li><b>The ladder:</b> first touch on email &rarr; once engaged, offer the choice ("prefer text for scheduling?") &rarr; logistics move to their channel; substance stays on email.</li>
+        <li><b>Modes flip the default:</b> high-volume runs mobile-first (frontline candidates live on phones); knowledge-based stays email-first and formal.</li>
+        <li><b>The phone call is human-only:</b> the recruiter nudge — the agent never robocalls.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Internal — recruiters, HMs, interviewers, employees</h3>
+      <ul>
+        <li><b>Slack / Teams (whichever the org runs) = lightweight &amp; latency-sensitive:</b> one-tap approve/edit on drafts (approval latency is the system's real bottleneck), negotiation asks, feedback chasing.</li>
+        <li><b>Email = considered &amp; sensitive:</b> internal-mobility outreach (a private, no-instant-reply medium for an employee exploring a move), digests, policy changes.</li>
+        <li><b>Interruption budget:</b> non-urgent batches into digests; only the time-critical — a candidate about to be lost, an approval blocking a booking — interrupts in real time.</li>
+      </ul>
+      <p style="font-size:.88rem;margin-top:.6rem"><b>Getting smarter:</b> per-person channel profiles (response rate, latency, time-of-day) route <em>and time</em> messages; escalation ladder — one bump on channel A, then try B, never simultaneous blasts; cross-channel frequency caps count all channels together; a light/heavy classifier means heavy content physically can't route to text.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 CAPABILITIES ================= -->
+<section class="section" id="capabilities">
+  <div class="sec-head"><div class="sec-num">03</div><h2>The five capabilities</h2></div>
+  <p class="sec-intro">Each capability pairs a mechanism with the psychological principle that makes it convert — persuasion designed in, never manipulation: every principle here works by making a genuine opportunity easier to see and act on.</p>
+
+  <div class="cap">
+    <div class="cap-badge">1</div>
+    <div>
+      <h3>Talent-pool rediscovery &amp; "fishing for interest"</h3>
+      <p>The agent continuously matches open and upcoming roles against the owned pool, ranking on fit, recency, seniority, and prior engagement. Matched candidates get a deliberately simple, low-pressure email from the recruiter's identity — gauging interest, not pitching. Replies route to the recruiter for personal follow-up. <b>High-value candidates</b> (rare skills, strong prior interviews, leadership profiles) escalate: the agent drafts an email in the hiring manager's voice and, once approved, sends it from the HM directly.</p>
+      <div class="psy"><span>Mere exposure</span><span>Foot-in-the-door</span><span>Cocktail-party effect</span><span>Authority signaling</span><span>Curiosity gap</span></div>
+      <details class="psy-more"><summary>Why it works</summary>
+        <ul class="psy-detail">
+          <li><em>Mere exposure:</em> people who've interacted with the brand respond more warmly than cold prospects — rediscovery starts from familiarity, not zero.</li>
+          <li><em>Foot-in-the-door:</em> the first email asks for a tiny commitment ("worth a quick chat?"), not a decision. Small yeses precede big yeses.</li>
+          <li><em>Cocktail-party effect:</em> referencing the candidate's specific history ("you interviewed with our platform team in 2024") cuts through inbox noise, because people attend to information about themselves.</li>
+          <li><em>Authority:</em> an email from the hiring manager — not a recruiter, not a bot — reframes outreach as professional recognition: "you were hand-picked by the person you'd work for."</li>
+          <li><em>Curiosity gap:</em> the fishing email withholds detail, inviting a reply to learn more instead of presenting a full job description to reject.</li>
+        </ul>
+      </details>
+      <div style="margin-top:1.1rem;border-top:1px dashed var(--line);padding-top:1rem">
+        <h4 style="font-family:var(--disp);font-weight:700;font-size:1rem;margin-bottom:.5rem">The recruiter nudge: human touch at the top of the pyramid</h4>
+        <p style="font-size:.95rem;color:var(--ink-soft)">Recruiters run nurture personally today — and the agent deliberately keeps the most valuable slice of that human. It automates nurture <em>breadth</em>; for <b style="color:var(--ink)">high-value candidates matched to forecasted roles</b>, it nudges the recruiter to make the personal move: a call, a personal note, a coffee.</p>
+        <ul style="margin:.5rem 0 .3rem 1.15rem">
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">The trigger:</b> forecast ("platform lead likely opens in ~8 weeks") &times; candidate value &times; a <em>moment</em> from owned data — engagement rising, engagement decaying (save-the-relationship), last year's screen going cold, a tenure milestone that correlates with openness.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">The packet:</b> who, why now, why them, full touch history (nothing repeated), suggested talking points, recommended channel. One-tap outcome log feeds the record.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">Rationed &amp; collision-free:</b> a handful of nudges per week, prioritized — never a queue of hundreds — and the orchestrator suppresses automated touches around the personal one, so no robotic email lands the day after a warm call.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft)"><b style="color:var(--ink)">The psychology, both directions:</b> for the candidate, a personal call about a role that <em>doesn't exist yet</em> is recruiting's strongest recognition signal — relationship equity banked before any competitor knows there's a race. For the recruiter, it's the adoption story: the agent owns breadth, the human owns depth — relationship work, not machine-minding.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-badge">2</div>
+    <div>
+      <h3>AI screening — the AI Interviewer agent</h3>
+      <p>Delivered by Eightfold's existing <b>AI Interviewer</b> agent: the recruiter screen step, performed <b>before the HM screen</b>. In a traditional funnel an interested candidate waits days in a recruiter phone-screen queue; here the AI Interviewer conducts that screen the moment interest lands — and the conversation is <b>two-way</b>: it sells the job (role story, team, growth path) while evaluating fit and interest, framed as "a 10-minute screening," not a 30-minute interview. It covers the must-have criteria agreed with the HM, logistics, timeline, and mutual fit, and outputs a standardized scorecard, a narrative summary, and flags — never pass/fail verdicts. The recruiter reviews, the HM decides, and candidates who clear it go straight to HM scheduling. Recruiters shift from conducting screens to reviewing scorecards and taking the conversations that genuinely need a human.</p>
+      <div class="psy"><span>Commitment &amp; consistency</span><span>Procedural justice</span><span>Zeigarnik effect</span></div>
+      <details class="psy-more"><summary>Why it works</summary>
+        <ul class="psy-detail">
+          <li><em>Commitment &amp; consistency:</em> answering screening questions is itself a micro-commitment that deepens investment in the process.</li>
+          <li><em>Procedural justice:</em> an identical, transparent screen for everyone raises perceived fairness — and rejected candidates stay warm in the pool for next time.</li>
+          <li><em>Zeigarnik:</em> an in-progress screen creates an open loop the candidate wants to close, sustaining momentum between touchpoints.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div style="background:var(--ink);border-radius:12px;padding:1.4rem 1.8rem;margin-bottom:1.2rem">
+    <div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:.5rem">The handoff &middot; AI Interviewer &rarr; Scheduling Agent</div>
+    <p style="color:#c8d6d2;font-size:.95rem;margin:0">Screening and scheduling are <b style="color:#fff">deliberately separate agents</b> — separate skills, autonomy profiles, and swappability — but the candidate experiences one continuous conversation. The seam is engineered away by a structured contract: on completing a screen, the AI Interviewer emits <code style="font-family:var(--mono);font-size:.78em;background:rgba(255,255,255,.1);padding:.12em .4em;border-radius:4px;color:#eef4f1">{scorecard, flags, confidence, transcript_summary, availability_windows, timezone, urgency_signals}</code> to the orchestrator. The last three are the design insight: the screen's closing minutes capture scheduling inputs — "if we move forward, what does your week look like?" — so the Scheduling Agent <b style="color:#fff">starts warm</b>, the candidate never repeats themselves, and a clear pass becomes proposed HM slots within minutes, at peak engagement. Routing runs through the orchestrator, never agent-to-agent: high-confidence pass + auto-advance &rarr; scheduling activates; low confidence &rarr; human review first; fail-flag &rarr; human decision, never an automated rejection. The handoff also runs in <b style="color:#fff">reverse</b>: feedback-chasing returns interview outcomes that calibrate the AI Interviewer's rubrics — screen scorecards vs. onsite results are the training signal.</p>
+  </div>
+
+  <div class="cap">
+    <div class="cap-badge">3</div>
+    <div>
+      <h3>Hiring-manager scheduling — an agent, not a feature</h3>
+      <p>Picking up the handoff contract from the AI Interviewer — scorecard, availability windows, timezone, and urgency already in hand — the Scheduling Agent reads HM and interviewer calendars, proposes specific slots, and books the HM interview directly — no recruiter-screen queue in between, compressing interest-to-HM-conversation from days to hours. But booking is only the surface: scheduling is secretly a <b>portfolio optimization problem</b> — interviewer time is the funnel's scarcest shared resource, and this agent manages it across every candidate, role, and week at once.</p>
+      <details class="psy-more"><summary>Four coordination dimensions</summary>
+        <ul class="psy-detail">
+          <li><em>Multi-party solves:</em> panels and full loops — several calendars plus the candidate, rounds sequenced with the right gaps, "can we do next week?" handled conversationally.</li>
+          <li><em>Cross-candidate arbitration:</em> three cleared candidates, two Thursday slots — explicit priority policy (high-value first, deadline roles first) instead of invisible recruiter judgment; deprioritized candidates get honest slot communication, never silence.</li>
+          <li><em>Interviewer-portfolio management:</em> load-balancing the qualified pool, protecting maker time, weekly caps, fair rotation — the dimension nobody staffs today.</li>
+          <li><em>Cascade repair &amp; lifecycle:</em> a broken loop triggers a re-solve and notifications; prep packets assign panel focus areas; reminders cut no-shows; feedback is chased until the scorecard lands.</li>
+        </ul>
+      </details>
+      <div style="margin-top:1.1rem;border-top:1px dashed var(--line);padding-top:1rem">
+        <h4 style="font-family:var(--disp);font-weight:700;font-size:1rem;margin-bottom:.5rem">The negotiation layer: opening slots for high-value candidates</h4>
+        <p style="font-size:.95rem;color:var(--ink-soft)">When the earliest acceptable loop is too far out for a candidate worth moving fast on, the agent negotiates 1:1 with interviewers over Slack or email. <b style="color:var(--ink)">Candidate value sets a disruption budget</b> (how much interviewer inconvenience this candidate justifies); urgency signals — competing offers, notice periods, engagement decay — set the assertiveness.</p>
+        <ul style="margin:.5rem 0 .3rem 1.15rem">
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">Ask with the why:</b> "strong platform candidate, competing offer expires Friday — could you free 45 min Thursday? Your 2pm looks movable; I'll reschedule it for you." Urgency always honest.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">Options plus rework:</b> concrete swaps, the agent absorbs all reshuffling — the yes costs one click. A "no" degrades to a shorter format, an alternate interviewer, or a split loop.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.4rem"><b style="color:var(--ink)">Fairness ledger, hard stop:</b> spread the asks ("you covered the last two urgent panels; I asked Dana first"); declining carries zero penalty; one ask + one nudge, then top-tier urgency escalates to the HM to make the <em>human</em> ask — the agent never borrows authority.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft)"><b style="color:var(--ink)">Transparent &amp; bounded:</b> 1:1 for convenience, logged to the loop's shared thread; disruption budgets inside the auto-budget envelope; a no-touch list (customer calls, exec sessions, PTO, focus blocks) is absolute; interviewer preferences honored permanently.</li>
+        </ul>
+      </div>
+      <div class="psy"><span>Default effect</span><span>Speed as status signal</span><span>Scarcity</span></div>
+      <details class="psy-more"><summary>Why it works</summary>
+        <ul class="psy-detail">
+          <li><em>Default effect:</em> "Tuesday 2pm or Thursday 10am?" converts far better than "send me your availability" — choosing among defaults beats generating options.</li>
+          <li><em>Speed as status:</em> fast scheduling tells candidates they're a priority; top candidates read process speed as a proxy for company quality.</li>
+          <li><em>Scarcity:</em> limited, real slots ("the HM has two openings this week") create gentle urgency without artificial pressure.</li>
+        </ul>
+      </details>
+    </div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-badge">4</div>
+    <div>
+      <h3>Pipeline insights</h3>
+      <p>A live view of the sourcing funnel — pool coverage per role, reply and pass rates, scheduling conversion, time-in-stage, stall points — delivered as prioritized next actions ("replies drop 40% past 90 words"; "this pool is exhausted — trigger content"), not raw dashboards. For the recruiting team, the <b>progress principle</b> and action-framing keep the insight loop motivating rather than blaming.</p>
+      <div class="psy"><span>Progress principle</span><span>Action framing</span></div>
+    </div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-badge">5</div>
+    <div>
+      <h3>Social content strategy, human-in-the-loop</h3>
+      <p>When insights show a thin pool, the agent shifts to demand generation: drafting role spotlights, team stories, and HM point-of-view posts for recruiters, HMs, and employees to publish under their own names. Humans review, edit, and post — keeping the channel authentic, platform-compliant, and dramatically more visible, since personal posts outperform company pages.</p>
+      <div class="psy"><span>Social proof</span><span>Narrative transport</span><span>In-group identity</span><span>Messenger effect</span></div>
+      <details class="psy-more"><summary>Why it works</summary>
+        <ul class="psy-detail">
+          <li><em>Social proof:</em> posts featuring real employees and real work signal that credible people already chose this company.</li>
+          <li><em>Narrative transport:</em> stories about a person and a problem outperform feature lists — the agent drafts in story structure by default.</li>
+          <li><em>In-group identity:</em> content in an engineer's or designer's authentic voice attracts people who identify with that tribe, self-selecting for fit.</li>
+          <li><em>Messenger effect:</em> the same message lands differently from a hiring manager than from a corporate account — exactly why the human posts it.</li>
+        </ul>
+      </details>
+      <div style="margin-top:1.1rem;border-top:1px dashed var(--line);padding-top:1rem">
+        <h4 style="font-family:var(--disp);font-weight:700;font-size:1rem;margin-bottom:.5rem">The advocacy engine: finding the right voices, earning the post</h4>
+        <p style="font-size:.95rem;color:var(--ink-soft)">"Humans publish, agent drafts" is half a mechanism until it answers <em>which</em> humans, <em>why</em> they'd bother, and <em>what</em> lands in their hands. The agent treats advocacy exactly like the referral engine — targeting and prompting, never broadcast.</p>
+        <ul style="margin:.5rem 0 .6rem 1.15rem">
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.45rem"><b style="color:var(--ink)">Who posts — four targeting signals:</b> audience overlap (whose network contains the missing talent — same internal signals as referrals: shared employers, schools, skill domains); messenger credibility for this audience (engineers reach engineers; the HM carries authority; a recent hire carries "why I joined" authenticity); posting propensity (opt-in, past participation, past impact); and <b style="color:var(--ink)">story freshness</b> — the decisive one: the platform's event stream already surfaces natural posting moments (promotion, work anniversary, shipped project, new-hire month, conference talk), and a moment-anchored ask converts where a calendar campaign doesn't. Rotation caps stop the same five advocates burning out.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.45rem"><b style="color:var(--ink)">The ask:</b> personal and moment-tied — "you just shipped the payments migration; we're building platform-engineer pipeline; here's a draft in your voice — edit anything or skip entirely." Two or three angle variants (personal story, team spotlight, point-of-view), one-tap copy, and the person always publishes it themselves.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft);margin-bottom:.45rem"><b style="color:var(--ink)">The incentive:</b> cash-per-post backfires — it crowds out intrinsic motivation and makes posts read as ads. What sustains advocacy: the draft itself (effort is the barrier; removing it is the reward), recognition framing ("your story is exactly what these candidates need to hear"), personal-brand benefit (the post builds <em>their</em> visibility — say so honestly), and the closed loop ("your post brought 14 pool entrants, two now interviewing") — the same feedback that turns first-time referrers into repeat referrers. Strictly opt-in, never manager-pushed, never performance-adjacent: the moment posting feels like an obligation, authenticity collapses and the channel with it.</li>
+          <li style="font-size:.92rem;color:var(--ink-soft)"><b style="color:var(--ink)">Attribution — who brought whom:</b> every draft embeds a unique tokenized short link per advocate &times; post &times; role (<code style="font-family:var(--mono);font-size:.8em;background:#eef4f1;padding:.1em .35em;border-radius:4px">acme.jobs/p/8f3k2</code>) — opaque, tamper-proof, zero poster effort. Click &rarr; token persisted on the profile as a source attribute (never cookies alone) &rarr; credit carries through to hire; first-touch default. Advocates see aggregate counts, never names, and measured impact feeds back into advocate scoring.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 CHANNELS ================= -->
+<section class="section" id="channels">
+  <div class="sec-head"><div class="sec-num">04</div><h2>Extending the charter: internal candidates &amp; referrals</h2></div>
+  <p class="sec-intro">Two channels inside the company outperform every external one — and both reuse the same machinery: match, warm up, escalate, screen, schedule, measure. With them, the default search order for any new role becomes the ring diagram above.</p>
+
+  <div class="sequence">
+    <div class="seq-step"><div class="seq-k"><span class="dot" style="background:var(--ring1)"></span>Ring 1</div><div class="seq-t">Internal mobility</div><div class="seq-d">Fish the org chart first — skills-adjacency matching, confidential until the employee opts in, human close-outs guaranteed.</div></div>
+    <div class="seq-step"><div class="seq-k"><span class="dot" style="background:var(--ring2)"></span>Ring 2</div><div class="seq-t">Referral prompts</div><div class="seq-d">Targeted asks to the employees most likely to know a fit — "you worked at Databricks; anyone come to mind?"</div></div>
+    <div class="seq-step"><div class="seq-k"><span class="dot" style="background:var(--ring3)"></span>Ring 3</div><div class="seq-t">Talent-pool rediscovery</div><div class="seq-d">Reactivate past applicants, silver medalists, alumni, and dormant leads the company already paid to attract.</div></div>
+    <div class="seq-step"><div class="seq-k"><span class="dot" style="background:var(--ring4)"></span>Ring 4</div><div class="seq-t">Content-driven demand</div><div class="seq-d">When the inner rings run thin, the advocacy engine finds the right voices, hands them a ready-to-post draft, and human-published stories refill the pond.</div></div>
+  </div>
+
+  <div class="twocol">
+    <div class="panel">
+      <h3>Internal mobility, first-class <span style="font-family:var(--mono);font-size:.6em;letter-spacing:.08em;color:var(--amber-deep);vertical-align:middle">REQUIRES TALENT MANAGEMENT</span></h3>
+      <p>For every open role, an internal pass matches employees on skills adjacency, tenure, performance signals, and stated career interests — surfacing strong matches <em>before</em> any external outreach. The guardrails differ from external sourcing:</p>
+      <ul>
+        <li><b>Career Coach is the front door:</b> internal outreach lands inside the career conversation the employee is already having — "a role just opened that fits where you said you want to go." Employee-initiated framing, psychologically safer, on a surface most employees already use. The marketplace adds a half-step in (try the team via a project); mentors double as an internal warm-intro graph.</li>
+        <li><b>Configurable confidentiality:</b> manager notification is policy, enforced consistently, so trust never depends on which recruiter is involved.</li>
+        <li><b>No dead ends — grow your own:</b> internal non-selects get a personal close-out <em>plus a development path toward the forecasted role</em> ("you're two skills away from the Q3 platform-lead profile; here's the course and project that close it"). A near-miss becomes manufactured pipeline.</li>
+        <li><b>Adjacency over titles:</b> a deliberately wider matching aperture, since the company can absorb ramp-up risk it wouldn't take on an external hire.</li>
+      </ul>
+      <div class="psy"><span>Loss aversion</span><span>Recognition</span><span>Psychological safety</span><span>Status-quo bias</span></div>
+      <p style="margin-top:.8rem;font-size:.88rem">Proactively surfacing paths converts "I have to leave to grow" into "I can grow here" — retention as a by-product of sourcing.</p>
+    </div>
+    <div class="panel">
+      <h3>Referrals as an orchestrated loop</h3>
+      <p>Referral programs fail on prompting, not incentives: employees don't know which roles are open at the moment they're talking to a friend. Four moves fix it:</p>
+      <ul>
+        <li><b>Targeted asks, not broadcasts:</b> route prompts to employees whose networks overlap the role — shared past employers, schools, communities.</li>
+        <li><b>Friction removal:</b> the employee names a person; the agent creates the record, drafts outreach (a human sends it), and tracks credit automatically.</li>
+        <li><b>Loop closing:</b> referrers hear about every stage — programs die when a referral vanishes for six weeks.</li>
+        <li><b>Warm-intro routing:</b> before any cold HM email to a high-value candidate, check for a mutual connection. A friend's vouch beats any drafted message.</li>
+      </ul>
+      <div class="psy"><span>Messenger effect</span><span>Reciprocity &amp; identity</span><span>Availability heuristic</span><span>Commitment escalation</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 ORCHESTRATION ================= -->
+<section class="section" id="orchestration">
+  <div class="sec-head"><div class="sec-num">05</div><h2>Orchestration: the agent as conductor</h2></div>
+  <p class="sec-intro">Orchestration decides who acts, when, and in what order — including vertically: the forecasting agent emits demand signals, function agents turn them into programs, role agents execute, each constrained by the policies and budgets set above. Most multi-agent failures are coordination gaps, not weak agents — so the concerns are explicit.</p>
+
+  <div class="orch-grid">
+    <div class="orch"><h4>Shared state, single truth</h4><p>All candidate state lives in the talent graph; agents are stateless workers reading and writing through the orchestrator, which serializes updates. No agent ever acts on a divergent view.</p></div>
+    <div class="orch"><h4>Structured contracts</h4><p>Typed interfaces between agents — the AI Interviewer returns {scorecard, flags, confidence, availability, urgency}, never free prose the next agent must interpret. JSON for agents; natural language for humans and candidates.</p></div>
+    <div class="orch"><h4>Concurrency control</h4><p>Per-candidate locks and a contact ledger: one active conversation, one owner, every touchpoint recorded — so parallelism never becomes duplicate outreach.</p></div>
+    <div class="orch"><h4>Priority arbitration</h4><p>Explicit, inspectable rules for scarce resources — HM calendar slots, approval attention, send budgets: high-value first, deadline roles first, internal before external at equal fit.</p></div>
+    <div class="orch"><h4>Escalation &amp; uncertainty</h4><p>Three outcomes per agent: success, failure, <em>uncertainty</em>. Failures retry with backoff; uncertainty escalates immediately. Safety comes from knowing when to stop the machine and ask.</p></div>
+    <div class="orch"><h4>Compensation &amp; rollback</h4><p>Flows fail midway — calendars change, roles close. Compensating actions (re-propose, graceful role-closed note, return to pool intact) so no candidate is left in limbo. In recruiting, limbo <em>is</em> the brand damage.</p></div>
+    <div class="orch"><h4>Observability &amp; audit</h4><p>Every handoff traced: which agent, what inputs, approved by whom, sent when. "Why did the system email this person?" is always answerable — unexplainable decisions won't be trusted or adopted.</p></div>
+    <div class="orch"><h4>External agents (MCP)</h4><p>Calendar, HRIS, and vendor agents get less trust: outputs are data to validate, never instructions; timeouts and fallbacks enforced; nothing external bypasses the approval gates.</p></div>
+    <div class="orch"><h4>Model heterogeneity</h4><p>Embeddings for matching, rules for cadence, different LLMs for drafting vs. screening — swappable behind stable contracts. The contract stays; the model evolves.</p></div>
+  </div>
+
+  <div class="orch-never">
+    <h4>What the orchestrator never does</h4>
+    <p>It never makes hiring judgments, never handles sensitive or compensation conversations, and never executes the final send or publish on anything a candidate, employee, or the public sees. <strong>Its job is to get the right decision to the right human at the right moment — not to make the decision itself.</strong></p>
+  </div>
+</section>
+
+<!-- ================= 05 AUTONOMY ================= -->
+<section class="section" id="autonomy">
+  <div class="sec-head"><div class="sec-num">06</div><h2>The automation boundary</h2></div>
+  <p class="sec-intro">"Human-in-the-loop" is a per-task decision, not one setting. Over-automate and an unreviewed rejection reaches an internal employee; under-automate and recruiters spend their day approving day-4 nudges. Four questions draw the line; the modes below apply it; earned autonomy moves it.</p>
+
+  <div class="four-q">
+    <div class="q"><b>1 · Reversibility</b><p>If it's wrong, can it be undone before anyone notices? A ranking can. A sent email cannot.</p></div>
+    <div class="q"><b>2 · Visibility</b><p>Does a candidate, employee, or the public see the output directly?</p></div>
+    <div class="q"><b>3 · Judgment</b><p>Deterministic — rules, calendars, dedup — or does it require reading context, tone, intent?</p></div>
+    <div class="q"><b>4 · Stakes</b><p>What are the legal, emotional, or brand consequences of a miss?</p></div>
+  </div>
+  <p style="max-width:60em;color:var(--ink-soft);font-size:.98rem"><b>The heuristic underneath:</b> candidates don't resent automated <em>logistics</em> — instant scheduling reads as competence. They resent automated <em>judgment and relationship moments</em>. Automate the plumbing; keep humans where trust is formed or broken.</p>
+
+  <div class="modes" style="margin-top:1.6rem">
+    <div class="mode m-auto">
+      <span class="tag">Fully autonomous</span>
+      <h4>Runs continuously, no approval</h4>
+      <ul>
+        <li>Matching &amp; ranking against every role</li>
+        <li>Follow-up execution within an approved sequence — day-4 nudge, stop-on-reply, opt-outs</li>
+        <li>Unambiguous reply triage</li>
+        <li>Scheduling end to end — slots, booking, reminders, routine reschedules</li>
+        <li>Referral prompts to employees</li>
+        <li>Insights, alerting, and all invisible plumbing: enrichment, dedup, attribution, audit logs</li>
+      </ul>
+    </div>
+    <div class="mode m-draft">
+      <span class="tag">Draft → human approves</span>
+      <h4>The visible layer</h4>
+      <ul>
+        <li>Every first-touch email in a new context</li>
+        <li>Anything in the HM's voice — <b>never</b> graduates to auto-send</li>
+        <li>Internal-mobility outreach to employees</li>
+        <li>Referred-candidate outreach — a human sends it; human-to-human <em>is</em> the mechanism</li>
+        <li>All social content; all external rejections</li>
+        <li>Role rubrics — HM confirms; calibration is where accountability and bias review live</li>
+      </ul>
+    </div>
+    <div class="mode m-human">
+      <span class="tag">Human-only</span>
+      <h4>Agent assists, never acts</h4>
+      <ul>
+        <li>Advance/reject decisions — the agent scores, a person decides; rejections are never machine-issued</li>
+        <li>Close-outs with internal candidates who weren't selected</li>
+        <li>Compensation, visa, accommodation, or any emotionally weighted conversation — triage routes these straight to a human with context</li>
+        <li>Final hiring judgments, always</li>
+      </ul>
+    </div>
+    <div class="mode m-exc">
+      <span class="tag">Exception-based</span>
+      <h4>Autonomous until ambiguous</h4>
+      <ul>
+        <li>Reply triage: automate the clear ~80%, escalate the ambiguous ~20%</li>
+        <li>Scheduling: escalate on a third conflict or a special request</li>
+        <li>Screening: flag low-confidence scorecards instead of guessing</li>
+        <li>Safety lives in well-tuned escalation triggers plus the audit trail — not per-item approvals</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="earned">
+    <h4>Earned autonomy — the boundary moves</h4>
+    <p>The line above is launch, not steady state. Autonomy ratchets <b>up</b> on evidence: fishing templates approved unedited 95%+ of the time graduate to auto-send with spot checks; consistently accurate scorecards unlock auto-<em>advance</em> (never auto-reject) above a recruiter-set threshold. It ratchets <b>down automatically</b> on incidents — a complaint, a mis-send, a spike in edit rates drops the task back to draft-and-approve without waiting for a human to notice.</p>
+    <p>Autonomy levels are configuration visible to leadership, with a global kill switch — and everything runs inside the <b>auto-budget envelope</b>: per-role, per-function, and company-wide limits on automated volume and spend, so even a fully trusted task can never scale past explicit authorization. Trust is extended incrementally, in proportion to demonstrated reliability, and withdrawn instantly on violation — the same way the agent treats candidates, and the same way recruiters will learn to trust the agent.</p>
+  </div>
+
+  <h3>The admin model: one scope switchboard, three autonomy presets</h3>
+  <p style="max-width:60em;color:var(--ink-soft);font-size:.98rem">Two orthogonal dials, operable without a config surface nobody can reason about. <b>Dial 1 — Scope:</b> which capabilities run at all — the switchboard is entitlement-aware (unlicensed capabilities appear as upgrade paths, not broken toggles) — sourcing, nurture, AI screening, scheduling, internal mobility, referrals, social/advocacy, each independently on or off ("source and screen, but no scheduling"; "schedule, but no AI screening and no social"). <b>Graceful degradation</b> makes any combination coherent: turning off a middle stage never breaks the chain — with scheduling off, the AI Interviewer's handoff terminates in a warm packet to the recruiter's queue; with screening off, expressed interest routes to the recruiter with the match rationale attached. <b>Dial 2 — Autonomy:</b> three presets.</p>
+
+  <div class="modes" style="margin-top:1.2rem">
+    <div class="mode m-human">
+      <span class="tag">Level 1 · Recommend</span>
+      <h4>The agent thinks; humans act</h4>
+      <ul>
+        <li>Matches, ranks, drafts, proposes — nothing outbound without a human click, including scheduling proposals</li>
+        <li>Trust-building launch mode; right for regulated or skeptical environments</li>
+      </ul>
+    </div>
+    <div class="mode m-draft">
+      <span class="tag">Level 2 · Review — default</span>
+      <h4>Agent executes; humans keep judgment</h4>
+      <ul>
+        <li>The automation boundary exactly as defined above</li>
+        <li>Logistics fully autonomous: approved sequences, scheduling execution, clear-case triage</li>
+        <li>Everything visible or voice-carrying: draft-and-approve</li>
+      </ul>
+    </div>
+    <div class="mode m-auto">
+      <span class="tag">Level 3 · Run</span>
+      <h4>The playbook runs end-to-end</h4>
+      <ul>
+        <li>Everything that has <em>earned</em> graduation: proven templates auto-send, clear passes auto-advance, negotiation asks go out autonomously</li>
+        <li>Bounded by the auto-budget envelope and spot-check sampling</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="earned" style="margin-top:1.2rem">
+    <h4>Three rules keep it simple and safe</h4>
+    <p><b>Floors never move:</b> rejections, HM-voice sends, anything public, compensation conversations, and internal close-outs stay human at <em>every</em> level — Run raises the ceiling on logistics and outreach; it never deletes the human-only tier. That is precisely what lets an admin choose Run without fear.</p>
+    <p><b>Levels set the ceiling; earned autonomy sets the position:</b> choosing Run doesn't grant instant full autonomy — it permits tasks to graduate as they prove out, and incidents still auto-drop a task regardless of the admin setting. Admin intent and demonstrated reliability both have to agree.</p>
+    <p><b>Inheritance, stricter wins:</b> company default &rarr; function override &rarr; role override, mirroring the vision's three levels — the CHRO sets Review company-wide, volume hiring runs engineering at Run, a sensitive exec search drops to Recommend. One admin screen: the scope switchboard, the level per org/function/role, the budget envelope, and the immovable floor — every change logged.</p>
+  </div>
+</section>
+
+<!-- ================= 07 HIRING MODES ================= -->
+<section class="section" id="modes">
+  <div class="sec-head"><div class="sec-num">07</div><h2>Two hiring modes: high-volume &amp; knowledge-based</h2></div>
+  <p class="sec-intro">Same agent, same machinery — but the two dominant hiring modes want the dials set very differently. This is the admin model in practice: neither mode needs a different product.</p>
+
+  <div class="twocol">
+    <div class="panel" style="border-top:4px solid var(--teal)">
+      <h3>High-volume hiring</h3>
+      <p style="font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-deep)">Retail · warehouse · support · seasonal · campus — the mode is throughput</p>
+      <ul>
+        <li><b>Runs at the function level:</b> standing pipelines per location and job family, evergreen reqs — not per-req sourcing.</li>
+        <li><b>Speed everywhere:</b> AI screening for <em>every</em> interested candidate, instant knockout criteria, self-serve slot selection, batch scheduling into hiring days and superdays.</li>
+        <li><b>Nurture = talent communities and rehire pools:</b> seasonal boomerangs and past strong applicants are the highest-converting volume channel a company owns.</li>
+        <li><b>Channels skew mobile</b> (SMS/WhatsApp pacing matters most here); <b>advocacy skews local</b> — a store manager's post beats any corporate campaign inside the store's hiring radius.</li>
+        <li><b>Autonomy: Run</b> — high template maturity, standardized roles, stakes low enough for spot-check sampling. Floors hold: rejections and anything public stay human.</li>
+        <li><b>Metrics:</b> apply-to-schedule time, show rate, time-to-start, cost per hire.</li>
+      </ul>
+    </div>
+    <div class="panel" style="border-top:4px solid var(--amber)">
+      <h3>Knowledge-based hiring</h3>
+      <p style="font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-deep)">Specialized professionals · senior ICs · leadership · rare skills — the mode is precision &amp; relationship</p>
+      <ul>
+        <li><b>Runs at the role level</b> with every high-touch mechanism engaged: high-value scoring, warm-intro routing before cold outreach, HM-voice escalation, the Scheduling Agent's negotiation layer.</li>
+        <li><b>The AI Interviewer's two-way selling dialed up:</b> at this tier the candidate is screening the company harder than the reverse.</li>
+        <li><b>Nurture arcs run months to years:</b> forecasting-triggered, low-frequency, genuinely useful touches that compound mere exposure until the role opens.</li>
+        <li><b>Advocacy = thought leadership from senior peers</b> — in-group credibility for an audience that ignores recruiting posts.</li>
+        <li><b>Autonomy: Review, deliberately</b> — volume is low enough that reviewing every scorecard and draft costs minutes, and the relationship stakes justify it.</li>
+        <li><b>Metrics:</b> offer-accept rate, quality of hire, rare-skill pool depth, pipeline readiness when a forecasted role opens.</li>
+      </ul>
+    </div>
+  </div>
+  <p style="max-width:62em;color:var(--ink-soft);font-size:.98rem;margin-top:1.2rem">Scope and autonomy presets, set per function through the inheritance model, turn one agent into both — the <b>volume engine</b> and the <b>courtship engine</b> — with pipeline insights reporting each mode against its own definition of winning.</p>
+</section>
+
+<!-- ================= 06 BUILD ================= -->
+<section class="section" id="build">
+  <div class="sec-head"><div class="sec-num">08</div><h2>How it gets built</h2></div>
+  <p class="sec-intro">An orchestrator coordinating specialized agents over a shared data layer, with approval and safety plumbing between the agents and the outside world — nothing candidate-facing or public leaves without passing a gate, and every artifact is logged.</p>
+
+  <div class="twocol">
+    <div class="panel">
+      <h3>Architecture</h3>
+      <ul class="arch-list">
+        <li><b>Data layer:</b> ATS/CRM + HRIS unified into a talent graph with consent and preference flags; employee data on a stricter access tier with its own audit trail.</li>
+        <li><b>Matching &amp; scoring:</b> embedding-based semantic match plus a high-value model (skills rarity, prior performance, seniority, recency); wider adjacency aperture and a policy engine for internal matching; calibrated by recruiter feedback.</li>
+        <li><b>Referral engine:</b> network-signal matching for targeted prompts, one-tap capture, automatic attribution, referrer status updates.</li>
+        <li><b>Outreach engine:</b> LLM drafting with per-sender persona profiles, sequence cadences, and hard guardrails — suppression lists, opt-outs, frequency caps, CAN-SPAM/GDPR in the send path.</li>
+        <li><b>Screening agent:</b> rubric-driven conversational screen; structured scorecards to the ATS.</li>
+        <li><b>Scheduling service:</b> calendar APIs, slot proposal, time zones, automatic reschedule flows.</li>
+        <li><b>Insights layer:</b> full-funnel event stream; an insight agent that turns metrics into prioritized recommendations.</li>
+        <li><b>Content agent:</b> drafts from role data, team inputs, and pipeline gaps; human approval queue with edit-and-publish.</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <h3>Success metrics</h3>
+      <ul class="arch-list">
+        <li><b>Core funnel:</b> pool reactivation rate, fishing-email reply rate, high-value conversion to screen, screen-to-interview conversion, time-to-first-interview, recruiter hours saved per hire.</li>
+        <li><b>Internal channel:</b> internal fill rate, close-out satisfaction, retention lift among employees surfaced for roles.</li>
+        <li><b>Referrals:</b> prompt-to-referral conversion, referral share of hires, repeat-referrer rate, quality-of-hire and retention deltas vs. other channels.</li>
+        <li><b>Content:</b> applicant lift attributable to human-published posts.</li>
+      </ul>
+      <p style="font-size:.88rem;margin-top:.6rem">Within two quarters, these measured numbers replace the industry benchmarks in Section 01 as the working evidence base.</p>
+    </div>
+  </div>
+
+  <h3>Phased rollout</h3>
+  <div class="phases">
+    <div class="phase" data-p="Phase 1"><h5>Prove the fishing loop</h5><p>Pool rediscovery + fishing emails with full recruiter approval; prove reply rates against a baseline.</p></div>
+    <div class="phase" data-p="Phase 2"><h5>Escalate &amp; screen</h5><p>High-value scoring + HM-voice drafting; AI screening for engaged candidates.</p></div>
+    <div class="phase" data-p="Phase 3"><h5>Compress &amp; see</h5><p>Automated scheduling and the insights layer.</p></div>
+    <div class="phase" data-p="Phase 4"><h5>Open the inner rings</h5><p>Internal mobility pass and the referral engine — after HRIS integration and HR policy sign-off, once the core loop is trusted.</p></div>
+    <div class="phase" data-p="Phase 5"><h5>Close the system</h5><p>Content strategy loop: insights detect thin pools → content generates demand → new entrants feed the pool.</p></div>
+  </div>
+</section>
+
+<!-- ================= 08 BUILDABILITY ================= -->
+<section class="section" id="buildability">
+  <div class="sec-head"><div class="sec-num">09</div><h2>Buildability: exists today vs. net-new</h2></div>
+  <p class="sec-intro">This is a future-state vision — but it stands on a foundation that exists. The Eightfold API v2 surface already exposes most of the <em>data, matching, and record-keeping</em> this concept depends on; the new work is the <em>intelligence, autonomy, and conversation</em> on top. We are not rebuilding a talent platform — we are giving one agency.</p>
+
+  <div class="twocol">
+    <div class="panel" style="border-top:4px solid var(--teal)">
+      <h3>&#10003; Exists today — orchestrate, don't build</h3>
+      <ul>
+        <li><b>Matching &amp; ranking:</b> Matched Candidates for Position (top-1000 leads), Matched Positions for Profile, Matched Demands for Employee, Employee Role Match Scores. The matching engine is a platform primitive — the agent consumes and tunes it.</li>
+        <li><b>The owned pool:</b> Profiles (search/batch/CRUD), ATS Candidates &amp; Positions, Talent Pool join — the entire "own pond" data layer behind one authenticated API.</li>
+        <li><b>Outreach + contact ledger:</b> User Campaigns, User Messages, Email Delivery Feedback (native deliverability monitoring), Profile Notes flowing into sourcing analytics.</li>
+        <li><b>Funnel state machine:</b> Upsert Application Stage, Profile Applications, Offers — the orchestrator's state transitions have write primitives.</li>
+        <li><b>The agents that already exist — AI Interviewer and Career Coach:</b> the AI Interviewer already runs recruiter screens as a platform agent capable of recruiter screening, with Question Templates and Profile Feedback (scorecards) as its records; Schedule Interview, Interview Guides, Feedback Links, and User Calendar Events cover the scheduling primitives.</li>
+        <li><b>Internal channel &amp; readiness <em>(with Talent Management)</em>:</b> Employee/HRIS entities, Skill Gap Analysis, Recommended Roles, Career Paths, Courses, Mentors.</li>
+        <li><b>Forecasting inputs:</b> Demands, Org Units, Insights; Succession Plans + Recommended Successors <em>(with Talent Management)</em>; AI Potential / Adoption / Transformation Gap <em>(with Workforce Readiness)</em>.</li>
+        <li><b>Orchestrator plumbing &amp; governance:</b> Entity Changelog event streams, batch-fetch, Async status, native Approval Workflows (the draft-and-approve tier), OAuth 2.0 with entity-level READ/WRITE scopes — each sub-agent on a least-privilege key. Rate limits (100 rpm; 20 rpm for match endpoints) are the concrete scarce resource priority arbitration manages.</li>
+      </ul>
+    </div>
+    <div class="panel" style="border-top:4px solid var(--amber)">
+      <h3>&#9733; Net-new — the actual build</h3>
+      <ul>
+        <li><b>The forecasting agent:</b> signals exist (churn, demand, succession, readiness); the predictive synthesis — "this role opens in Q3, start nurturing now" — does not.</li>
+        <li><b>Nurture sequencing engine + recruiter nudge system:</b> autonomous pre-req cadences are new — as is the nudge engine routing high-value, forecast-matched candidates to recruiters for personal calls, with moment detection, rationing, and touch-suppression around human contact.</li>
+        <li><b>LLM drafting layer:</b> per-sender personas (recruiter / HM voice), template graduation, tone guardrails.</li>
+        <li><b>Agent integrations, not inventions:</b> AI Interviewer — two-way selling, in-screen availability/urgency capture, the handoff contract, the outcome-calibration loop; Career Coach — the internal-outreach handoff.</li>
+        <li><b>Conversational intelligence layer + channel router:</b> human pacing, friction framing, per-person channel profiles, the light/heavy message classifier, escalation ladders, and cross-channel caps — the routing brain behind SMS/WhatsApp, Slack/Teams, and email.</li>
+        <li><b>The orchestrator itself:</b> three-level coordination, per-candidate locks, priority arbitration, escalation triggers, earned-autonomy ratchets, auto-budget governor.</li>
+        <li><b>The scheduling agent's optimization + negotiation layer:</b> booking primitives exist; the constraint solver (cross-candidate arbitration, load-balancing, cascade repair, superday solves) and the 1:1 interviewer negotiation capability (disruption budgets, fairness ledger, escalation to human asks) are new.</li>
+        <li><b>Referral engine:</b> network-signal inference from profile data, targeted prompts, attribution.</li>
+        <li><b>Content agent + advocacy engine:</b> advocate scoring (audience overlap, credibility, propensity, story freshness from the event stream), moment-anchored prompting, and an attribution link service — unique tokenized short links per advocate &times; post &times; role, persisted as profile source attributes, with aggregate impact loops back to the poster.</li>
+        <li><b>Insights-to-action layer:</b> the changelog supplies events; the logic that turns funnel patterns into triggered actions is new.</li>
+      </ul>
+      <p style="margin-top:.6rem;font-size:.9rem"><b>Rule of thumb: records, matching, and rails exist; agency is the build.</b> Closer to real than the ambition suggests — the platform was already built to be the substrate.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CLOSING ================= -->
+<div class="closing">
+  <div class="closing-inner">
+    <div class="doc-eyebrow">The one-line summary</div>
+    <blockquote>An agent that fishes our own pond before roles even open — <b>with a human approving every word that matters.</b></blockquote>
+  </div>
+</div>
+<footer class="foot">
+  <div>The Sourcing &amp; Nurturing Agent · Concept v1.1</div>
+  <div>Compliance, change management &amp; security hardening: deferred to design phase by intent</div>
+</footer>
+
+
+<!-- ================= COMMENT LAYER ================= -->
+<style>
+/* ---- comment layer ---- */
+mark.cmk{background:rgba(217,161,59,.28);border-bottom:2px solid var(--amber);color:inherit;padding:0;cursor:pointer;transition:background .2s}
+mark.cmk:hover{background:rgba(217,161,59,.45)}
+mark.cmk.cw-resolved{background:rgba(217,161,59,.10);border-bottom:2px dotted var(--line)}
+mark.cmk.cw-flash{animation:cwflash 1.2s ease}
+@keyframes cwflash{0%,60%{background:rgba(23,112,107,.35)}100%{background:rgba(217,161,59,.28)}}
+.cw-pin{font-family:var(--mono);font-size:.6rem;font-weight:600;background:var(--amber);color:var(--ink);border-radius:999px;padding:.05rem .35rem;margin-left:.15rem;cursor:pointer;user-select:none;vertical-align:super;line-height:1}
+.cw-pin.cw-resolved{background:var(--line);color:var(--ink-soft)}
+.cw-fabs{position:fixed;right:1.3rem;bottom:1.3rem;z-index:200;display:flex;flex-direction:column;gap:.6rem;align-items:flex-end}
+.cw-fab{width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;background:var(--teal-deep);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(20,40,47,.25);position:relative;transition:transform .15s, background .2s}
+.cw-fab:hover{transform:translateY(-2px)}
+.cw-fab.cw-on{background:var(--amber);color:var(--ink)}
+.cw-fab svg{width:24px;height:24px}
+.cw-fab-mini{width:42px;height:42px;background:var(--card);color:var(--teal-deep);border:1px solid var(--line)}
+.cw-badge{position:absolute;top:-4px;right:-4px;background:var(--coral);color:#fff;font-family:var(--mono);font-size:.62rem;font-weight:600;border-radius:999px;min-width:1.15rem;height:1.15rem;display:flex;align-items:center;justify-content:center;padding:0 .25rem}
+.cw-badge.cw-zero{display:none}
+.cw-banner{position:fixed;top:3.4rem;left:50%;transform:translateX(-50%);z-index:190;background:var(--ink);color:#eef4f1;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;padding:.5rem .95rem;border-radius:999px;display:none;box-shadow:0 6px 18px rgba(20,40,47,.3)}
+.cw-banner b{color:var(--amber)}
+body.cmode .cw-banner{display:block}
+body.cmode{cursor:text}
+.cw-bubble{position:absolute;z-index:210;background:var(--ink);color:#fff;border:none;border-radius:8px;padding:.45rem .8rem;font-family:var(--disp);font-weight:600;font-size:.8rem;cursor:pointer;box-shadow:0 6px 16px rgba(20,40,47,.35);display:flex;align-items:center;gap:.4rem}
+.cw-bubble:hover{background:var(--teal-deep)}
+.cw-pop{position:absolute;z-index:220;width:min(340px,calc(100vw - 2rem));background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 14px 40px rgba(20,40,47,.22);padding:1rem 1.1rem;font-size:.85rem}
+.cw-pop-quote{font-family:var(--serif);font-style:italic;color:var(--ink-soft);border-left:3px solid var(--amber);padding:.15rem .6rem;margin-bottom:.7rem;font-size:.8rem;max-height:4.6em;overflow:hidden}
+.cw-pop input[type=text],.cw-pop textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:.5rem .6rem;font-family:var(--serif);font-size:.85rem;background:var(--paper);color:var(--ink);margin-bottom:.55rem}
+.cw-pop textarea{min-height:70px;resize:vertical}
+.cw-pop input:focus,.cw-pop textarea:focus{outline:2px solid var(--teal);border-color:var(--teal)}
+.cw-actions{display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap}
+.cw-btn{font-family:var(--disp);font-weight:600;font-size:.76rem;border-radius:8px;padding:.42rem .85rem;cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+.cw-btn:hover{border-color:var(--teal)}
+.cw-btn-primary{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff}
+.cw-btn-primary:hover{background:var(--teal)}
+.cw-btn-danger{color:var(--coral)}
+.cw-thread-item{border-top:1px dashed var(--line);padding:.55rem 0}
+.cw-thread-item:first-of-type{border-top:none}
+.cw-meta{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:.2rem}
+.cw-meta b{color:var(--teal-deep)}
+.cw-side{position:fixed;top:0;right:0;height:100vh;width:min(380px,100vw);background:var(--card);border-left:1px solid var(--line);z-index:230;transform:translateX(105%);transition:transform .25s ease;display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(20,40,47,.12)}
+.cw-side.cw-open{transform:translateX(0)}
+.cw-side-head{padding:1rem 1.2rem;border-bottom:1px solid var(--line)}
+.cw-side-head h4{font-family:var(--disp);font-weight:700;font-size:1.05rem;display:flex;justify-content:space-between;align-items:center}
+.cw-side-tools{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
+.cw-side-list{flex:1;overflow-y:auto;padding:1rem 1.2rem}
+.cw-item{border:1px solid var(--line);border-radius:10px;padding:.75rem .85rem;margin-bottom:.7rem;cursor:pointer;background:var(--paper)}
+.cw-item:hover{border-color:var(--teal)}
+.cw-item.cw-orphan{opacity:.75;border-style:dashed;cursor:default}
+.cw-item-quote{font-style:italic;color:var(--ink-soft);font-size:.76rem;margin:.2rem 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cw-item-text{font-size:.84rem}
+.cw-sec-label{font-family:var(--mono);font-size:.64rem;letter-spacing:.12em;text-transform:uppercase;color:var(--amber-deep);margin:.9rem 0 .5rem}
+.cw-empty{color:var(--ink-soft);font-size:.85rem;font-style:italic;padding:.5rem 0}
+.cw-x{background:none;border:none;font-size:1.15rem;cursor:pointer;color:var(--ink-soft);line-height:1}
+.cw-x:hover{color:var(--ink)}
+@media print{.cw-fabs,.cw-banner,.cw-side,.cw-pop,.cw-bubble,.cw-pin{display:none !important}mark.cmk{background:transparent;border-bottom:none}}
+@media (max-width:600px){.cw-fabs{right:.8rem;bottom:.8rem}}
+</style>
+
+<div class="cw-fabs" data-cw="1">
+  <button class="cw-fab cw-fab-mini" id="cwSideBtn" title="Comments list" aria-label="Open comments list">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="14" y2="17"/></svg>
+    <span class="cw-badge cw-zero" id="cwBadge">0</span>
+  </button>
+  <button class="cw-fab" id="cwModeBtn" title="Toggle comment mode" aria-label="Toggle comment mode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+  </button>
+</div>
+<div class="cw-banner" data-cw="1"><b>Comment mode</b> — select text to comment · Esc to exit</div>
+<div class="cw-side" id="cwSide" data-cw="1">
+  <div class="cw-side-head">
+    <h4>Comments <button class="cw-x" id="cwSideClose" aria-label="Close">×</button></h4>
+    <div class="cw-side-tools">
+      <button class="cw-btn" id="cwRefresh">&#8635; Refresh</button>
+      <button class="cw-btn" id="cwExport">Export JSON</button>
+      <button class="cw-btn" id="cwImport">Import</button>
+      <button class="cw-btn" id="cwCopy">Copy summary</button>
+      <button class="cw-btn cw-btn-danger" id="cwClear">Clear all</button>
+    </div>
+  </div>
+  <div id="cwStoreNote" style="padding:.55rem 1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;color:var(--ink-soft);border-bottom:1px solid var(--line)"></div>
+  <div class="cw-side-list" id="cwList"></div>
+</div>
+<input type="file" id="cwFile" accept="application/json" style="display:none" data-cw="1">
+
+<script>
+(function(){
+"use strict";
+var KEY='sna-comments-v1', AKEY='sna-author-v1', SKEY='sna-comments-shared';
+/* Same-origin comments API. Works automatically when hosted on Vercel or Fly.io with the
+   bundled /api/comments backend. The endpoint is probed at boot; if unreachable (e.g. the
+   file opened locally), comments fall back to this browser + Export/Import. To point at a
+   different host, set an absolute URL here. */
+var API_URL='https://ruta-sourcing-agent.fly.dev/api/comments';
+var state={comments:[],nextNum:1,author:'',deleted:[]};
+var mode=false, pending=null, bubble=null, pop=null;
+
+function store(fn){try{return fn()}catch(e){return null}}
+function cacheLocal(){store(function(){localStorage.setItem(KEY,JSON.stringify({comments:state.comments,nextNum:state.nextNum,deleted:state.deleted}));localStorage.setItem(AKEY,state.author)})}
+
+/* ---------- shared backend adapter ---------- */
+var backend={mode:'local',failures:0};
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+async function detectBackend(){
+  if(typeof window!=='undefined'&&window.storage&&window.storage.set&&window.storage.get){
+    /* probe shared storage — some environments expose the API but reject writes */
+    var probe='sna-probe-'+Math.random().toString(36).slice(2,8);
+    try{
+      await window.storage.set(probe,'1',true);
+      try{await window.storage.delete(probe,true)}catch(e){}
+      return 'shared';
+    }catch(e){
+      console.warn('shared storage unavailable, trying personal:',e&&e.message);
+      try{
+        await window.storage.set(probe,'1',false);
+        try{await window.storage.delete(probe,false)}catch(e2){}
+        return 'personal';
+      }catch(e3){console.warn('personal storage unavailable:',e3&&e3.message)}
+    }
+  }
+  if(API_URL){
+    try{var res=await fetch(API_URL,{cache:'no-store'});if(res.ok)return 'api'}catch(e){}
+  }
+  return 'local';
+}
+backend.load=async function(){
+  if(backend.mode==='shared'||backend.mode==='personal'){
+    var shared=(backend.mode==='shared');
+    try{var r=await window.storage.get(SKEY,shared);backend.failures=0;syncNote();return r&&r.value?JSON.parse(r.value):null}
+    catch(e){return null} /* key may simply not exist yet */
+  }
+  if(backend.mode==='api'){
+    try{var res=await fetch(API_URL,{cache:'no-store'});if(!res.ok)return null;backend.failures=0;syncNote();return await res.json()}catch(e){return null}
+  }
+  return store(function(){var raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):null});
+};
+backend.save=async function(blob){
+  cacheLocal();
+  if(backend.mode==='local')return;
+  var body=JSON.stringify(blob);
+  for(var attempt=0;attempt<3;attempt++){
+    try{
+      if(backend.mode==='shared'||backend.mode==='personal'){
+        await window.storage.set(SKEY,body,backend.mode==='shared');
+      }else if(backend.mode==='api'){
+        var res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:body});
+        if(!res.ok)throw new Error('HTTP '+res.status);
+      }
+      backend.failures=0;syncNote();return;
+    }catch(e){
+      console.error('save attempt '+(attempt+1)+' failed:',e&&e.message);
+      await sleep(800*(attempt+1));
+    }
+  }
+  backend.failures++;syncNote();
+};
+
+/* merge remote comments into local state by id; returns list of newly added comments */
+function mergeRemote(remote){
+  if(!remote)return [];
+  /* honor remote deletions (tombstones) */
+  var rdel=remote.deleted||[];
+  var ldel={};state.deleted.forEach(function(id){ldel[id]=1});
+  rdel.forEach(function(id){
+    if(!ldel[id]){state.deleted.push(id);ldel[id]=1}
+    var i=state.comments.findIndex(function(c){return c.id===id});
+    if(i>-1){unwrap(id);state.comments.splice(i,1)}
+  });
+  if(!remote.comments)return [];
+  var byId={};state.comments.forEach(function(c){byId[c.id]=c});
+  var added=[];
+  remote.comments.forEach(function(rc){
+    if(ldel[rc.id])return; /* deleted locally or remotely — stays deleted */
+    rc.replies=rc.replies||[];
+    var lc=byId[rc.id];
+    if(!lc){
+      var nums={};state.comments.forEach(function(c){nums[c.num]=1});
+      if(!rc.num||nums[rc.num]){rc.num=state.nextNum++}
+      state.nextNum=Math.max(state.nextNum,rc.num+1);
+      state.comments.push(rc);added.push(rc);
+    }else{
+      var seen={};lc.replies.forEach(function(r){seen[r.created+'|'+r.text]=1});
+      rc.replies.forEach(function(r){if(!seen[r.created+'|'+r.text])lc.replies.push(r)});
+      /* newer update wins for resolved state */
+      var rt=rc.updated||rc.created||'', lt=lc.updated||lc.created||'';
+      if(rc.resolved!==lc.resolved&&rt>lt){lc.resolved=rc.resolved;lc.updated=rc.updated;
+        document.querySelectorAll('[data-cid="'+lc.id+'"]').forEach(function(el){el.classList.toggle('cw-resolved',lc.resolved)});}
+    }
+  });
+  if(remote.nextNum)state.nextNum=Math.max(state.nextNum,remote.nextNum);
+  return added;
+}
+
+var saveTimer=null;
+function saveAll(){
+  cacheLocal();
+  if(backend.mode==='local')return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){
+    /* read-merge-write to avoid clobbering other reviewers */
+    backend.load().then(function(remote){
+      var added=mergeRemote(remote);
+      added.forEach(function(c){anchor(c)});
+      if(added.length)refresh();
+      return backend.save({comments:state.comments,nextNum:state.nextNum,deleted:state.deleted,updated:new Date().toISOString()});
+    });
+  },400);
+}
+function esc(t){var d=document.createElement('div');d.textContent=t==null?'':String(t);return d.innerHTML}
+function now(){return new Date().toISOString()}
+function fmt(iso){try{var d=new Date(iso);return d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}catch(e){return''}}
+function uid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+
+/* ---------- text indexing & anchoring ---------- */
+function skip(n){for(var p=n.parentNode;p&&p!==document.body.parentNode;p=p.parentNode){if(p.nodeType===1&&(p.hasAttribute&&p.hasAttribute('data-cw')||/^(SCRIPT|STYLE)$/.test(p.tagName)))return true}return false}
+function buildIndex(){
+  var nodes=[],text='',w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null);
+  var n;while((n=w.nextNode())){if(skip(n))continue;var s=n.nodeValue;nodes.push({node:n,start:text.length,end:text.length+s.length});text+=s}
+  return {nodes:nodes,text:text};
+}
+function globalOffset(idx,node,off){for(var i=0;i<idx.nodes.length;i++){if(idx.nodes[i].node===node)return idx.nodes[i].start+off}return -1}
+function nthIndexOf(hay,needle,occ){var i=-1;for(var k=0;k<=occ;k++){i=hay.indexOf(needle,i+1);if(i<0)return -1}return i}
+function countBefore(hay,needle,pos){var c=0,i=hay.indexOf(needle);while(i>-1&&i<pos){c++;i=hay.indexOf(needle,i+1)}return c}
+function wrapOffsets(idx,gs,ge,cid,num,resolved){
+  var marks=[];
+  for(var i=0;i<idx.nodes.length;i++){
+    var e=idx.nodes[i];if(e.end<=gs||e.start>=ge)continue;
+    var node=e.node,ls=Math.max(0,gs-e.start),le=Math.min(node.nodeValue.length,ge-e.start);
+    if(le>ls&&node.nodeValue.slice(ls,le).length){
+      var target=node;
+      if(ls>0)target=target.splitText(ls);
+      if(le-ls<target.nodeValue.length)target.splitText(le-ls);
+      if(!target.nodeValue.trim()&&target.nodeValue.length===0)continue;
+      var m=document.createElement('mark');m.className='cmk'+(resolved?' cw-resolved':'');m.setAttribute('data-cid',cid);
+      target.parentNode.replaceChild(m,target);m.appendChild(target);marks.push(m);
+    }
+  }
+  if(marks.length){
+    var pin=document.createElement('sup');pin.className='cw-pin'+(resolved?' cw-resolved':'');pin.setAttribute('data-cw','1');pin.setAttribute('data-cid',cid);pin.textContent=num;
+    var last=marks[marks.length-1];last.parentNode.insertBefore(pin,last.nextSibling);
+  }
+  return marks.length>0;
+}
+function anchor(c){
+  if(!c.quote)return false;
+  var idx=buildIndex();
+  var pos=nthIndexOf(idx.text,c.quote,c.occ||0);
+  if(pos<0)pos=idx.text.indexOf(c.quote); /* fallback: first occurrence */
+  if(pos<0)return false;
+  return wrapOffsets(idx,pos,pos+c.quote.length,c.id,c.num,c.resolved);
+}
+function unwrap(cid){
+  document.querySelectorAll('mark.cmk[data-cid="'+cid+'"]').forEach(function(m){
+    var p=m.parentNode;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize();
+  });
+  document.querySelectorAll('.cw-pin[data-cid="'+cid+'"]').forEach(function(p){p.remove()});
+}
+function firstMark(cid){return document.querySelector('mark.cmk[data-cid="'+cid+'"]')}
+function docOrder(a,b){
+  var ma=firstMark(a.id),mb=firstMark(b.id);
+  if(!ma&&!mb)return a.num-b.num; if(!ma)return 1; if(!mb)return -1;
+  return (ma.compareDocumentPosition(mb)&Node.DOCUMENT_POSITION_FOLLOWING)?-1:1;
+}
+
+/* ---------- popovers ---------- */
+function closeFloats(){if(bubble){bubble.remove();bubble=null}if(pop){pop.remove();pop=null}}
+function place(el,rect){
+  document.body.appendChild(el);
+  var w=el.offsetWidth,x=rect.left+window.scrollX+rect.width/2-w/2;
+  x=Math.max(10,Math.min(x,window.scrollX+document.documentElement.clientWidth-w-10));
+  var y=rect.bottom+window.scrollY+8;
+  el.style.left=x+'px';el.style.top=y+'px';
+}
+function showBubble(rect){
+  closeFloats();
+  bubble=document.createElement('button');bubble.className='cw-bubble';bubble.setAttribute('data-cw','1');
+  bubble.innerHTML='&#128172; Add comment';
+  bubble.addEventListener('mousedown',function(e){e.preventDefault()});
+  bubble.addEventListener('click',function(e){e.stopPropagation();var r=pending&&pending.rect;openComposer(r||rect)});
+  document.body.appendChild(bubble);
+  var w=bubble.offsetWidth;
+  var x=Math.max(10,rect.left+window.scrollX+rect.width/2-w/2);
+  bubble.style.left=x+'px';
+  bubble.style.top=(rect.top+window.scrollY-40)+'px';
+}
+function openComposer(rect){
+  if(!pending)return;var p=pending;
+  closeFloats();pending=p;
+  pop=document.createElement('div');pop.className='cw-pop';pop.setAttribute('data-cw','1');
+  pop.innerHTML='<div class="cw-pop-quote">'+esc(p.quote.slice(0,220))+(p.quote.length>220?'…':'')+'</div>'
+    +'<input type="text" id="cwName" placeholder="Your name" value="'+esc(state.author)+'">'
+    +'<textarea id="cwText" placeholder="Write a comment…"></textarea>'
+    +'<div class="cw-actions"><button class="cw-btn" id="cwCancel">Cancel</button><button class="cw-btn cw-btn-primary" id="cwSave">Comment</button></div>';
+  place(pop,rect);
+  pop.querySelector('#cwCancel').onclick=function(){pending=null;closeFloats()};
+  pop.querySelector('#cwSave').onclick=function(){
+    var name=pop.querySelector('#cwName').value.trim()||'Anonymous';
+    var text=pop.querySelector('#cwText').value.trim();
+    if(!text){pop.querySelector('#cwText').focus();return}
+    state.author=name;
+    var c={id:uid(),num:state.nextNum++,author:name,text:text,quote:p.quote,occ:p.occ,created:now(),resolved:false,replies:[]};
+    state.comments.push(c);
+    anchor(c);
+    pending=null;closeFloats();saveAll();refresh();
+  };
+  pop.querySelector(state.author?'#cwText':'#cwName').focus();
+}
+function openThread(cid,anchorEl){
+  var c=state.comments.find(function(x){return x.id===cid});if(!c)return;
+  closeFloats();
+  pop=document.createElement('div');pop.className='cw-pop';pop.setAttribute('data-cw','1');
+  var replies=c.replies.map(function(r){return '<div class="cw-thread-item"><div class="cw-meta"><b>'+esc(r.author)+'</b> · '+fmt(r.created)+'</div><div>'+esc(r.text)+'</div></div>'}).join('');
+  pop.innerHTML='<div class="cw-meta"><b>#'+c.num+' '+esc(c.author)+'</b> · '+fmt(c.created)+(c.resolved?' · <span style="color:var(--teal-deep)">resolved</span>':'')+'</div>'
+    +'<div class="cw-pop-quote">'+esc(c.quote.slice(0,180))+(c.quote.length>180?'…':'')+'</div>'
+    +'<div class="cw-thread-item" style="border-top:none;padding-top:0">'+esc(c.text)+'</div>'
+    +replies
+    +'<textarea id="cwReply" placeholder="Reply…"></textarea>'
+    +'<div class="cw-actions">'
+    +'<button class="cw-btn cw-btn-danger" id="cwDel">Delete</button>'
+    +'<button class="cw-btn" id="cwRes">'+(c.resolved?'Reopen':'Resolve')+'</button>'
+    +'<button class="cw-btn cw-btn-primary" id="cwReplyBtn">Reply</button></div>';
+  place(pop,anchorEl.getBoundingClientRect());
+  pop.querySelector('#cwReplyBtn').onclick=function(){
+    var t=pop.querySelector('#cwReply').value.trim();if(!t)return;
+    c.replies.push({author:state.author||'Anonymous',text:t,created:now()});c.updated=now();
+    saveAll();openThread(cid,anchorEl);refresh();
+  };
+  pop.querySelector('#cwRes').onclick=function(){
+    c.resolved=!c.resolved;c.updated=now();
+    document.querySelectorAll('[data-cid="'+cid+'"]').forEach(function(el){el.classList.toggle('cw-resolved',c.resolved)});
+    saveAll();closeFloats();refresh();
+  };
+  pop.querySelector('#cwDel').onclick=function(){
+    if(!confirm('Delete this comment?'))return;
+    unwrap(cid);state.comments=state.comments.filter(function(x){return x.id!==cid});
+    state.deleted.push(cid);
+    saveAll();closeFloats();refresh();
+  };
+}
+
+/* ---------- sidebar ---------- */
+var side=document.getElementById('cwSide'),list=document.getElementById('cwList');
+function itemHTML(c,orphan){
+  return '<div class="cw-item'+(orphan?' cw-orphan':'')+'" data-cid="'+c.id+'">'
+    +'<div class="cw-meta"><b>#'+c.num+' '+esc(c.author)+'</b> · '+fmt(c.created)+(orphan?' · &#9888; anchor not found':'')+'</div>'
+    +'<div class="cw-item-quote">&ldquo;'+esc(c.quote.slice(0,90))+'&rdquo;</div>'
+    +'<div class="cw-item-text">'+esc(c.text)+(c.replies.length?' <span class="cw-meta" style="display:inline">· '+c.replies.length+' repl'+(c.replies.length>1?'ies':'y')+'</span>':'')+'</div></div>';
+}
+function refresh(){
+  var open=state.comments.filter(function(c){return !c.resolved}).sort(docOrder);
+  var done=state.comments.filter(function(c){return c.resolved}).sort(docOrder);
+  var h='';
+  if(!state.comments.length)h='<div class="cw-empty">No comments yet. Turn on comment mode and select some text.</div>';
+  if(open.length){h+='<div class="cw-sec-label">Open ('+open.length+')</div>'+open.map(function(c){return itemHTML(c,!firstMark(c.id))}).join('')}
+  if(done.length){h+='<div class="cw-sec-label">Resolved ('+done.length+')</div>'+done.map(function(c){return itemHTML(c,!firstMark(c.id))}).join('')}
+  list.innerHTML=h;
+  var badge=document.getElementById('cwBadge');
+  badge.textContent=open.length;badge.classList.toggle('cw-zero',open.length===0);
+  list.querySelectorAll('.cw-item').forEach(function(el){
+    el.addEventListener('click',function(){
+      var cid=el.getAttribute('data-cid'),m=firstMark(cid);
+      if(!m)return;
+      side.classList.remove('cw-open');
+      m.scrollIntoView({behavior:'smooth',block:'center'});
+      document.querySelectorAll('mark.cmk[data-cid="'+cid+'"]').forEach(function(x){x.classList.remove('cw-flash');void x.offsetWidth;x.classList.add('cw-flash')});
+      setTimeout(function(){openThread(cid,m)},450);
+    });
+  });
+}
+
+/* ---------- export / import / copy / clear ---------- */
+document.getElementById('cwExport').onclick=function(){
+  var data=JSON.stringify({version:1,doc:'sourcing-agent-concept',exported:now(),comments:state.comments},null,2);
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download='sourcing-agent-comments.json';a.click();URL.revokeObjectURL(a.href);
+};
+document.getElementById('cwImport').onclick=function(){document.getElementById('cwFile').click()};
+document.getElementById('cwFile').addEventListener('change',function(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var data=JSON.parse(r.result),incoming=(data.comments||[]);
+      var have={};state.comments.forEach(function(c){have[c.id]=1});
+      incoming.forEach(function(c){
+        if(have[c.id])return;
+        c.num=state.nextNum++;c.replies=c.replies||[];
+        state.comments.push(c);anchor(c);
+      });
+      saveAll();refresh();
+    }catch(err){alert('Could not read that file as comments JSON.')}
+    e.target.value='';
+  };
+  r.readAsText(f);
+});
+document.getElementById('cwCopy').onclick=function(){
+  var lines=state.comments.slice().sort(docOrder).map(function(c){
+    var s='#'+c.num+' ['+(c.resolved?'resolved':'open')+'] '+c.author+' on "'+c.quote.slice(0,80)+'":\n  '+c.text;
+    c.replies.forEach(function(r){s+='\n    ↳ '+r.author+': '+r.text});
+    return s;
+  });
+  var txt='Comments — The Sourcing & Nurturing Agent (concept)\n\n'+lines.join('\n\n');
+  (navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){alert('Summary copied to clipboard.')},function(){prompt('Copy the summary below:',txt)});
+};
+document.getElementById('cwClear').onclick=function(){
+  if(!confirm('Delete ALL comments on this page?'))return;
+  state.comments.forEach(function(c){unwrap(c.id);state.deleted.push(c.id)});
+  state.comments=[];state.nextNum=1;saveAll();refresh();
+};
+
+/* ---------- mode & selection ---------- */
+var modeBtn=document.getElementById('cwModeBtn');
+function setMode(on){mode=on;document.body.classList.toggle('cmode',on);modeBtn.classList.toggle('cw-on',on);if(!on){pending=null;closeFloats()}}
+modeBtn.onclick=function(){setMode(!mode)};
+document.getElementById('cwSideBtn').onclick=function(){side.classList.toggle('cw-open');refresh()};
+document.getElementById('cwSideClose').onclick=function(){side.classList.remove('cw-open')};
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){setMode(false);side.classList.remove('cw-open');closeFloats()}});
+
+function handleSelection(){
+  if(!mode)return;
+  var sel=window.getSelection();
+  if(!sel||sel.isCollapsed||!sel.rangeCount){if(bubble&&!pop){bubble.remove();bubble=null}return}
+  var range=sel.getRangeAt(0);
+  var sc=range.startContainer,ec=range.endContainer;
+  if(sc.nodeType!==3||ec.nodeType!==3)return;
+  if(skip(sc)||skip(ec))return;
+  var idx=buildIndex();
+  var gs=globalOffset(idx,sc,range.startOffset),ge=globalOffset(idx,ec,range.endOffset);
+  if(gs<0||ge<0||ge<=gs)return;
+  var quote=idx.text.slice(gs,ge);
+  if(!quote.trim())return;
+  var occ=countBefore(idx.text,quote,gs);
+  var rect=range.getBoundingClientRect();
+  pending={quote:quote,occ:occ,rect:rect};
+  showBubble(rect);
+}
+document.addEventListener('mouseup',function(e){
+  if(e.target.closest&&e.target.closest('[data-cw]'))return;
+  setTimeout(handleSelection,10);
+});
+document.addEventListener('touchend',function(e){
+  if(e.target.closest&&e.target.closest('[data-cw]'))return;
+  setTimeout(handleSelection,200);
+});
+document.addEventListener('click',function(e){
+  var t=e.target;
+  var mk=t.closest?t.closest('mark.cmk, .cw-pin'):null;
+  if(mk){e.stopPropagation();openThread(mk.getAttribute('data-cid'),mk);return}
+  if(pop&&!pop.contains(t)&&!(t.closest&&t.closest('[data-cw]'))){closeFloats();pending=null}
+});
+
+/* ---------- refresh from shared store ---------- */
+function pullRemote(){
+  return backend.load().then(function(remote){
+    var added=mergeRemote(remote);
+    added.forEach(function(c){anchor(c)});
+    if(added.length)refresh();
+    return added.length;
+  });
+}
+document.getElementById('cwRefresh').onclick=function(){
+  var btn=this;btn.disabled=true;btn.textContent='Refreshing…';
+  pullRemote().then(function(n){refresh();btn.disabled=false;btn.innerHTML='&#8635; Refresh';});
+};
+
+/* ---------- boot ---------- */
+function storeNote(){
+  var el=document.getElementById('cwStoreNote');if(!el)return;
+  if(backend.failures>0){el.innerHTML='&#9888; SYNC FAILING — comments are kept locally; keep working, use Export JSON as backup';el.style.color='var(--coral)';return}
+  el.style.color='';
+  if(backend.mode==='shared')el.innerHTML='&#128101; SHARED — comments here are visible to everyone viewing this page';
+  else if(backend.mode==='api')el.innerHTML='&#128101; SHARED via API — comments are visible to everyone viewing this page';
+  else if(backend.mode==='personal')el.innerHTML='&#128100; SAVED TO YOUR CLAUDE STORAGE — visible only to you across sessions; use Export JSON to share';
+  else el.innerHTML='&#128274; THIS BROWSER ONLY — use Export/Import to share comments';
+}
+function syncNote(){storeNote()}
+async function boot(){
+  store(function(){state.author=localStorage.getItem(AKEY)||''});
+  backend.mode=await detectBackend();
+  storeNote();
+  if(backend.mode==='local'){
+    store(function(){var raw=localStorage.getItem(KEY);
+      if(raw){var data=JSON.parse(raw);state.comments=data.comments||[];state.nextNum=data.nextNum||state.comments.length+1;state.deleted=data.deleted||[]}});
+    state.comments.forEach(function(c){c.replies=c.replies||[];anchor(c)});
+    refresh();
+  }else{
+    /* shared mode: the shared store is the source of truth; local cache shows instantly, then sync */
+    store(function(){var raw=localStorage.getItem(KEY);
+      if(raw){var data=JSON.parse(raw);state.comments=data.comments||[];state.nextNum=data.nextNum||state.comments.length+1;state.deleted=data.deleted||[]}});
+    state.comments.forEach(function(c){c.replies=c.replies||[];anchor(c)});
+    refresh();
+    pullRemote().then(function(){refresh()});
+    /* light polling so other reviewers' comments appear without manual refresh */
+    setInterval(function(){if(!document.hidden)pullRemote()},30000);
+  }
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
+})();
+</script>
+
+
+<script>
+(function(){
+var btn=document.getElementById('execToggle');
+function apply(on){
+  document.body.classList.toggle('exec',on);
+  btn.innerHTML=on?'&#128462; Full document':'&#9889; Exec view';
+  try{localStorage.setItem('sna-view',on?'exec':'full')}catch(e){}
+  window.scrollTo({top:0});
+}
+btn.addEventListener('click',function(){apply(!document.body.classList.contains('exec'))});
+try{if(localStorage.getItem('sna-view')==='exec')apply(true)}catch(e){}
+
+/* left-rail scrollspy */
+var links=Array.prototype.slice.call(document.querySelectorAll('#leftNav a'));
+var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))}).filter(Boolean);
+function spy(){
+  var y=window.scrollY+140,cur=null;
+  for(var i=0;i<secs.length;i++){if(secs[i].offsetTop<=y)cur=secs[i].id}
+  links.forEach(function(a){a.classList.toggle('on',a.getAttribute('href')==='#'+cur)});
+}
+var t=null;
+window.addEventListener('scroll',function(){if(t)return;t=setTimeout(function(){t=null;spy()},120)},{passive:true});
+spy();
+})();
+</script>
+
+</body>
+</html>

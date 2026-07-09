@@ -246,6 +246,16 @@ body.exec .topnav{display:none}
 body.exec .leftnav{display:none}
 @media print{.leftnav{display:none}}
 
+
+/* ---- topbar comment controls ---- */
+.cw-topbtn{font-family:var(--disp);font-weight:700;font-size:.74rem;border:1.5px solid var(--amber-deep);color:var(--amber-deep);background:transparent;border-radius:999px;padding:.42rem .9rem;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:.4rem;transition:all .15s}
+.cw-topbtn:hover{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.cw-topbtn.cw-on{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.cw-topbadge{background:var(--coral);color:#fff;font-family:var(--mono);font-size:.6rem;font-weight:600;border-radius:999px;min-width:1.05rem;height:1.05rem;display:inline-flex;align-items:center;justify-content:center;padding:0 .22rem}
+.cw-topbadge.cw-zero{display:none}
+.cw-topgroup{display:flex;gap:.5rem;align-items:center}
+@media (max-width:600px){.cw-topbtn{font-size:.68rem;padding:.35rem .7rem}}
+
 </style>
 </head>
 <body>
@@ -253,6 +263,10 @@ body.exec .leftnav{display:none}
 <div class="topbar">
   <div class="topbar-inner">
     <div class="brand"><b>CONCEPT</b> · SOURCING &amp; NURTURING AGENT · v1.2</div>
+    <div class="cw-topgroup" data-cw="1">
+      <button class="cw-topbtn" id="cwTopMode" title="Highlight text to comment">&#128172; Comment</button>
+      <button class="cw-topbtn" id="cwTopSide" title="View all comments">All comments <span class="cw-topbadge cw-zero" id="cwBadgeTop">0</span></button>
+    </div>
     <button class="exec-toggle" id="execToggle">&#9889; Exec view</button>
     <nav class="topnav">
       <a href="#why">Why now</a>
@@ -1295,6 +1309,8 @@ function refresh(){
   list.innerHTML=h;
   var badge=document.getElementById('cwBadge');
   badge.textContent=open.length;badge.classList.toggle('cw-zero',open.length===0);
+  var tb=document.getElementById('cwBadgeTop');
+  if(tb){tb.textContent=open.length;tb.classList.toggle('cw-zero',open.length===0)}
   list.querySelectorAll('.cw-item').forEach(function(el){
     el.addEventListener('click',function(){
       var cid=el.getAttribute('data-cid'),m=firstMark(cid);
@@ -1349,9 +1365,12 @@ document.getElementById('cwClear').onclick=function(){
 
 /* ---------- mode & selection ---------- */
 var modeBtn=document.getElementById('cwModeBtn');
-function setMode(on){mode=on;document.body.classList.toggle('cmode',on);modeBtn.classList.toggle('cw-on',on);if(!on){pending=null;closeFloats()}}
+function setMode(on){mode=on;document.body.classList.toggle('cmode',on);modeBtn.classList.toggle('cw-on',on);var tb=document.getElementById('cwTopMode');if(tb){tb.classList.toggle('cw-on',on);tb.innerHTML=on?'&#10003; Commenting — Esc to exit':'&#128172; Comment'}if(!on){pending=null;closeFloats()}}
 modeBtn.onclick=function(){setMode(!mode)};
 document.getElementById('cwSideBtn').onclick=function(){side.classList.toggle('cw-open');refresh()};
+var tbMode=document.getElementById('cwTopMode'),tbSide=document.getElementById('cwTopSide');
+if(tbMode)tbMode.onclick=function(){setMode(!mode)};
+if(tbSide)tbSide.onclick=function(){side.classList.toggle('cw-open');refresh()};
 document.getElementById('cwSideClose').onclick=function(){side.classList.remove('cw-open')};
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){setMode(false);side.classList.remove('cw-open');closeFloats()}});
 
@@ -1444,11 +1463,9 @@ var btn=document.getElementById('execToggle');
 function apply(on){
   document.body.classList.toggle('exec',on);
   btn.innerHTML=on?'&#128462; Full document':'&#9889; Exec view';
-  try{localStorage.setItem('sna-view',on?'exec':'full')}catch(e){}
   window.scrollTo({top:0});
 }
 btn.addEventListener('click',function(){apply(!document.body.classList.contains('exec'))});
-try{if(localStorage.getItem('sna-view')==='exec')apply(true)}catch(e){}
 
 /* left-rail scrollspy */
 var links=Array.prototype.slice.call(document.querySelectorAll('#leftNav a'));

@@ -1,37 +1,50 @@
-# GitHub Pages (page) + Fly.io (comments API)
+# AI Recruiting Agent — interactive prototype
 
-Deploy order matters: Fly first (to get the API URL), then GitHub.
+A self-contained, single-file interactive prototype of an AI recruiting agent for Eightfold: an end-to-end hiring flow (9 steps), a recruiter **Mission Control**, a guided walkthrough, an interactive **Recruiter Review** workspace with a natural-language command box, live "agent working" animations, and a narrated **Present mode** for demos.
 
-## 1. Deploy the API on Fly
-Use the deploy-fly bundle:
-    fly auth login
-    # edit fly.toml: set a unique app name
-    fly volumes create comments_data --size 1 --region sjc
-    fly deploy
-    fly scale count 1
-Verify: https://<your-app>.fly.dev/api/comments returns {"comments":[],...}
+Everything is in `index.html` — no build step, no dependencies. Just open it, or host it.
 
-## 2. Point this page at it
-Already done — index.html is pre-configured for
-https://ruta-sourcing-agent.fly.dev/api/comments
+## Publish to GitHub Pages (2 minutes)
 
-## 3. Publish on GitHub Pages
-    git init && git add . && git commit -m "concept + review page"
-    git branch -M main
-    git remote add origin git@github.com:<you>/<repo>.git
-    git push -u origin main
-Then: repo Settings -> Pages -> Source: "Deploy from a branch" -> main, / (root) -> Save.
-Page appears at https://<you>.github.io/<repo>/ within a minute or two.
+### Option A — GitHub website (no command line)
+1. Go to https://github.com/new and create a repo, e.g. `eightfold-recruiting-agent` (Public).
+2. On the new repo page, click **uploading an existing file** and drag in `index.html`, `.nojekyll`, and `storyboard-shot-list.md`. Commit.
+3. Go to **Settings → Pages**. Under **Build and deployment**, set **Source = Deploy from a branch**, **Branch = main**, folder **/ (root)**. Save.
+4. Wait ~1 minute. Your site is live at:
+   `https://<your-username>.github.io/eightfold-recruiting-agent/`
 
-## 4. Verify shared comments
-Open the Pages URL, open the comment sidebar (list button, bottom-right):
-it must read "SHARED via API". Drop a test comment, then open the URL in an
-incognito window — the comment should be there.
+### Option B — command line
+This folder is already a git repo with an initial commit. From here:
 
-## Cautions
-- A PUBLIC repo makes the document itself publicly readable (it contains your
-  strategy). GitHub Pages on a PRIVATE repo requires a paid GitHub plan.
-- Anyone with the page URL can read and write comments. Share deliberately.
-- Freeze the page text during a review round: editing sentences orphans the
-  comments anchored to them (they show as "anchor not found", not lost).
-  Export JSON from the sidebar before pushing revisions.
+```bash
+# create the repo on GitHub first (website or `gh repo create`), then:
+git remote add origin https://github.com/<your-username>/eightfold-recruiting-agent.git
+git branch -M main
+git push -u origin main
+```
+
+Then enable Pages in **Settings → Pages** (Source: `main` / root), same as step 3 above.
+
+If you have the GitHub CLI installed and authenticated, the whole thing is one line:
+```bash
+gh repo create eightfold-recruiting-agent --public --source=. --push
+```
+…then enable Pages in Settings.
+
+## Local preview
+Just double-click `index.html`, or:
+```bash
+python3 -m http.server 8000   # then open http://localhost:8000
+```
+
+## What's inside
+- **Home** — landing page with three ways in (play the story / explore the flow / Mission Control).
+- **Mission Control** — the recruiter cockpit: "needs you" queue, live agent loop, requisition portfolio, plus a 30-second guided tour.
+- **9-step flow** — Understand the Role → Build the Talent Plan (grouped as one "Prep" phase) → Recruiter Review → Execution → Qualify & Score → Orchestrate & Schedule → Human Escalation → Continuous Optimization → Role Filled.
+- **Present mode** — a narrated, looping walkthrough (▶ Present); arrow keys to move between scenes.
+- **Agent / Recruiter toggle** — see what the agent does in the background vs. what the recruiter sees.
+
+`storyboard-shot-list.md` is the companion shot list for a storytelling video.
+
+---
+Prototype only — all data is illustrative; no real messages are sent.

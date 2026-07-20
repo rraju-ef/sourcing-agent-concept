@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Recruiting Agent — Flow & Mocks</title>
+<style>
+  :root{
+    --purple:#191841;      /* Eightfold ink-navy = primary */
+    --purple-600:#10102E;
+    --purple-50:#EEF0F7;
+    --purple-100:#D8DCEC;
+    --violet:#5E00FF;      /* Eightfold electric violet = AI / agent */
+    --mint:#88E2D2;        /* Eightfold signature mint = accent */
+    --mint-ink:#0C6B5C;
+    --ink:#191841;
+    --slate:#484B58;
+    --line:#E4E7F0;
+    --bg:#F7F8FC;
+    --card:#FFFFFF;
+    --green:#12A150; --green-bg:#E7F7EE;
+    --amber:#C77700; --amber-bg:#FDF3E2;
+    --red:#D3263B;   --red-bg:#FCE9EC;
+    --blue:#2563EB;  --blue-bg:#E8F0FE;
+    --radius:14px;
+    --shadow:0 1px 2px rgba(26,21,35,.06),0 8px 24px rgba(76,29,149,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  /* ---------- App shell ---------- */
+  .app{display:flex;min-height:100vh}
+  .side{width:238px;flex:0 0 238px;background:#fff;border-right:1px solid var(--line);
+    padding:18px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+  .brand{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:8px 8px 16px}
+  .ef-logo{width:150px;max-width:100%;height:auto}
+  .brand-sub{font-weight:600;color:var(--slate);font-size:11px;padding-left:2px}
+  .nav{list-style:none;margin:0;padding:0}
+  .nav li{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:10px;cursor:pointer;
+    font-size:13px;color:var(--slate);line-height:1.25;margin-bottom:2px}
+  .nav li:hover{background:var(--purple-50)}
+  .nav li.active{background:var(--purple-50);color:var(--purple-600);font-weight:700}
+  .nav .num{width:20px;height:20px;flex:0 0 20px;border-radius:6px;background:var(--purple-100);
+    color:var(--purple-600);font-size:11px;font-weight:800;display:grid;place-items:center;margin-top:1px}
+  .nav li.active .num{background:var(--purple);color:#fff}
+  .side .divider{height:1px;background:var(--line);margin:12px 4px}
+  .main{flex:1;min-width:0}
+  .topbar{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;
+    gap:14px;padding:0 26px;position:sticky;top:0;z-index:5}
+  .role-pill{background:var(--purple-50);color:var(--purple-600);font-weight:700;font-size:12px;
+    padding:5px 11px;border-radius:20px}
+  .crumb{font-size:13px;color:var(--slate)}
+  .crumb b{color:var(--ink)}
+  .spacer{flex:1}
+  .search{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 12px;font-size:12px;
+    color:var(--slate);width:220px}
+  .avatar{width:32px;height:32px;border-radius:50%;background:#DDD3F5;color:var(--purple-600);
+    display:grid;place-items:center;font-weight:700;font-size:12px}
+  .content{padding:26px 30px 60px;max-width:1120px}
+  /* ---------- Generic UI ---------- */
+  .h1{font-size:22px;font-weight:800;margin:0 0 3px}
+  .sub{color:var(--slate);font-size:13px;margin:0 0 20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .pad{padding:18px 20px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .sec-title{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);margin:0 0 12px}
+  .btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:9px;font-size:13px;font-weight:700;
+    padding:9px 16px;cursor:pointer;background:var(--purple);color:#fff}
+  .btn:hover{background:var(--purple-600)}
+  .btn.ghost{background:#fff;color:var(--purple-600);border:1px solid var(--purple-100)}
+  .btn.ghost:hover{background:var(--purple-50)}
+  .btn.sm{padding:6px 12px;font-size:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+  .t-green{background:var(--green-bg);color:var(--green)}
+  .t-amber{background:var(--amber-bg);color:var(--amber)}
+  .t-red{background:var(--red-bg);color:var(--red)}
+  .t-blue{background:var(--blue-bg);color:var(--blue)}
+  .t-purple{background:var(--purple-50);color:var(--purple-600)}
+  .t-grey{background:#EEF0F4;color:#65708A}
+  .metric{font-size:26px;font-weight:800}
+  .metric small{font-size:12px;font-weight:600;color:var(--slate);display:block;margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate);
+    padding:10px 12px;border-bottom:1px solid var(--line)}
+  td{padding:11px 12px;border-bottom:1px solid var(--line)}
+  tr:last-child td{border-bottom:none}
+  .who{display:flex;align-items:center;gap:10px}
+  .ava{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:11px;
+    background:#E9DEFC;color:var(--purple-600);flex:0 0 30px}
+  .muted{color:var(--slate);font-size:12px}
+  .bar{height:7px;border-radius:6px;background:#E4E7F0;overflow:hidden}
+  .bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--purple),var(--mint))}
+  .list-check{list-style:none;margin:0;padding:0;font-size:13px}
+  .list-check li{padding:7px 0;display:flex;gap:9px;align-items:flex-start;border-bottom:1px dashed var(--line)}
+  .list-check li:last-child{border-bottom:none}
+  .ck{color:var(--green);font-weight:900}
+  .pill-row{display:flex;flex-wrap:wrap;gap:8px}
+  .kv{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .kv:last-child{border-bottom:none}
+  .kv b{font-weight:700}
+  .chip{background:var(--purple-50);color:var(--purple-600);border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600}
+  .ai-note{background:linear-gradient(180deg,#FBFAFF,#F5F1FE);border:1px solid var(--purple-100);
+    border-radius:12px;padding:14px 16px;font-size:13px;display:flex;gap:11px}
+  .ai-badge{flex:0 0 auto;background:var(--violet);color:#fff;font-size:10px;font-weight:800;border-radius:6px;
+    padding:3px 7px;height:fit-content;letter-spacing:.04em}
+  .ring{--p:78;width:92px;height:92px;border-radius:50%;
+    background:conic-gradient(var(--purple) calc(var(--p)*1%),#E4E7F0 0);display:grid;place-items:center}
+  .ring > div{width:70px;height:70px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    font-weight:800;font-size:20px}
+  /* ---------- Motion / reveal ---------- */
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .rise{opacity:0;animation:rise .5s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes slideIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+  /* ---------- Hero spotlight ---------- */
+  .hero-chip{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.04em;color:#fff;
+    background:linear-gradient(135deg,var(--purple),var(--violet));border-radius:5px;padding:2px 6px;margin-left:6px}
+  .qitem.hero{background:linear-gradient(90deg,#FAF7FF,#fff);box-shadow:inset 4px 0 0 var(--purple)}
+  tr.hero td{background:#FAF7FF}
+  tr.hero td:first-child{box-shadow:inset 4px 0 0 var(--purple)}
+  /* ---------- Layer badge (who is acting) ---------- */
+  #layerbadge{position:fixed;top:70px;right:26px;z-index:40;display:none;align-items:center;gap:8px;
+    font-size:12px;font-weight:800;letter-spacing:.03em;padding:8px 14px;border-radius:22px;
+    box-shadow:var(--shadow);border:1px solid transparent}
+  #layerbadge.show{display:inline-flex}
+  #layerbadge .pip{width:9px;height:9px;border-radius:50%}
+  .lb-agent{background:#F1EBFF;color:#4A00CC;border-color:#E0D2FF!important}
+  .lb-agent .pip{background:var(--violet)}
+  .lb-rec{background:var(--amber-bg);color:var(--amber);border-color:#F3DDB4!important}
+  .lb-rec .pip{background:var(--amber)}
+  .lb-sys{background:#EEF0F4;color:#65708A}
+  .lb-sys .pip{background:#65708A}
+  body.present #layerbadge{top:22px;right:34px;font-size:14px;padding:10px 18px}
+  /* ---------- Agent / Recruiter view toggle ---------- */
+  .seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:3px}
+  .seg button{border:none;background:transparent;font-size:12px;font-weight:700;color:var(--slate);
+    padding:6px 11px;border-radius:7px;cursor:pointer}
+  .seg button.on{background:#fff;color:var(--purple-600);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .seg.dark{background:rgba(255,255,255,.1);border:none}
+  .seg.dark button{color:#B7AEC9}
+  .seg.dark button.on{background:rgba(255,255,255,.22);color:#fff;box-shadow:none}
+  /* ---------- Recruiter-view veil over background screens ---------- */
+  #content{position:relative}
+  .veil{position:absolute;inset:0;background:rgba(246,244,251,.86);backdrop-filter:blur(3px);
+    display:flex;align-items:flex-start;justify-content:center;padding-top:80px;z-index:25;animation:rise .35s ease forwards}
+  .veilcard{background:#fff;border:1px solid var(--purple-100);border-radius:16px;box-shadow:var(--shadow);
+    padding:24px 28px;max-width:460px;text-align:center}
+  .veilcard .vic{font-size:32px;margin-bottom:8px}
+  .veilcard h3{margin:0 0 6px;font-size:17px}
+  .veilcard p{margin:0;font-size:13px;color:var(--slate);line-height:1.5}
+  .veilcard .mini-tag{display:inline-block;margin-top:12px;font-size:11px;font-weight:800;
+    background:var(--purple-50);color:var(--purple-600);padding:5px 11px;border-radius:20px}
+  /* ---------- Present / Record mode ---------- */
+  body.present .side,body.present .topbar{display:none}
+  body.present .content{max-width:1180px;margin:0 auto 120px;padding:0;font-size:15px;
+    border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+  body.present .content .framebody{padding:36px 40px 44px}
+  /* surface chrome */
+  .chrome{display:flex;align-items:center;gap:12px;padding:10px 16px;font-size:12px;border-bottom:1px solid var(--line)}
+  .chrome .dots{display:inline-flex;gap:6px;flex:0 0 auto}
+  .chrome .dots i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .chrome .dots i:nth-child(1){background:#FF5F57}
+  .chrome .dots i:nth-child(2){background:#FEBC2E}
+  .chrome .dots i:nth-child(3){background:#28C840}
+  .chrome.browser{background:#EEF0F5;color:var(--slate)}
+  .chrome .urlbar{flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 13px;
+    font-size:12px;color:var(--ink);max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chrome-tag{font-weight:800;font-size:10px;letter-spacing:.04em;padding:3px 10px;border-radius:20px;flex:0 0 auto}
+  .chrome.browser .chrome-tag{background:var(--purple-50);color:var(--purple-600)}
+  .chrome.backstage{background:#141334;color:#C9C4E6}
+  .chrome.backstage .cg{width:22px;height:22px;border-radius:6px;background:var(--violet);color:#fff;
+    display:grid;place-items:center;font-size:12px;flex:0 0 22px}
+  .chrome.backstage .ct{flex:1;font-weight:600}
+  .chrome.backstage .chrome-tag{background:rgba(255,255,255,.13);color:#C9C4E6}
+  body.present .h1{font-size:30px}
+  body.present .sub{font-size:16px}
+  body.present .metric{font-size:34px}
+  body.present .kpi .n{font-size:32px}
+  body.present .qtitle{font-size:15px}
+  body.present .backbar{display:none}
+  body.present{background:radial-gradient(1200px 720px at 50% -12%,#241F52,#0B0A1C)}
+  .stagebar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
+    background:rgba(20,19,52,.96);color:#fff;backdrop-filter:blur(10px);
+    padding:15px 30px;align-items:center;gap:24px}
+  body.present .stagebar{display:flex}
+  .stagebar .sc{font-size:12px;font-weight:800;letter-spacing:.1em;color:#7E77A6;
+    white-space:nowrap;font-variant-numeric:tabular-nums}
+  .stagebar .cap{flex:1;font-size:16px;line-height:1.5;max-width:760px;color:#ECE9F7}
+  .stagebar .cap b{color:#C9B6FF;font-weight:700}
+  .stage-ctrl{display:flex;align-items:center;gap:10px;margin-left:auto}
+  .stagebar .stbtn{background:rgba(255,255,255,.14);color:#fff;border:none;border-radius:10px;
+    padding:10px 20px;font-weight:700;font-size:14px;cursor:pointer}
+  .stagebar .stbtn:hover{background:rgba(255,255,255,.24)}
+  .stagebar .stbtn.primary{background:var(--mint);color:#10102E}
+  .stagebar .stbtn.primary:hover{background:#a6ece0}
+  .stagebar .exit{width:38px;height:38px;border-radius:50%;background:transparent;color:#9A93B8;
+    border:none;font-size:15px;cursor:pointer;margin-left:4px}
+  .stagebar .exit:hover{background:rgba(255,255,255,.12);color:#fff}
+  .present-btn{background:var(--ink);color:#fff}
+  .present-btn:hover{background:#000}
+  /* ---------- Interactivity: hover + context modal ---------- */
+  .kpi{transition:transform .12s,box-shadow .12s}
+  .kpi:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(16,16,46,.1)}
+  .loop li{border-radius:8px;transition:background .12s}
+  .loop li:hover{background:var(--purple-50)}
+  .qgo{opacity:0;color:var(--violet);font-weight:800;font-size:12px;white-space:nowrap;
+    transform:translateX(-5px);transition:opacity .14s,transform .14s;align-self:center}
+  .qitem:hover .qgo{opacity:1;transform:none}
+  .qitem{transition:background .12s}
+  table.rowlink tbody tr{cursor:pointer;transition:background .12s}
+  table.rowlink tbody tr:hover td{background:#F1F5FC}
+  table.rowlink tbody tr.hero:hover td{background:#E8EEFA}
+  .modal-back{position:fixed;inset:0;background:rgba(16,16,46,.5);backdrop-filter:blur(3px);z-index:80;
+    display:none;align-items:center;justify-content:center;padding:24px}
+  .modal-back.on{display:flex;animation:rise .18s ease}
+  .modal{background:#fff;border-radius:18px;box-shadow:0 30px 80px rgba(16,16,46,.35);width:640px;max-width:100%;
+    max-height:88vh;overflow:auto;animation:pop .22s cubic-bezier(.2,.8,.2,1)}
+  @keyframes pop{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+  .modal-head{display:flex;gap:14px;align-items:flex-start;padding:20px 22px;border-bottom:1px solid var(--line)}
+  .modal-head .mic{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-size:20px;flex:0 0 42px}
+  .modal-head h2{margin:0 0 3px;font-size:17px}
+  .modal-close{margin-left:auto;background:var(--bg);border:none;border-radius:9px;width:32px;height:32px;
+    cursor:pointer;font-size:14px;color:var(--slate);flex:0 0 32px}
+  .modal-close:hover{background:var(--line)}
+  .modal-body{padding:20px 22px}
+  .modal-body h4{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate);margin:18px 0 9px}
+  .modal-body h4:first-child{margin-top:0}
+  .ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px 20px}
+  .kv2{display:flex;flex-direction:column;gap:2px;font-size:13px}
+  .kv2 span{font-size:11px;color:var(--slate)}
+  .kv2 b{font-weight:700}
+  ul.tp{list-style:none;margin:0;padding:0}
+  ul.tp li{display:flex;gap:9px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  ul.tp li:last-child{border-bottom:none}
+  .opt{display:flex;gap:10px;align-items:center;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
+    margin-bottom:8px;font-size:13px;cursor:pointer}
+  .opt:hover{border-color:var(--violet);background:#FBF9FF}
+  .opt input{width:16px;height:16px;accent-color:var(--violet);cursor:pointer}
+  .modal-foot{display:flex;gap:10px;align-items:center;padding:16px 22px;border-top:1px solid var(--line);
+    position:sticky;bottom:0;background:#fff}
+  .modal-foot .spacer{flex:1}
+  .modal-success{padding:46px 24px;text-align:center}
+  .modal-success .big{font-size:46px;margin-bottom:8px}
+  .modal-success h2{margin:0 0 6px;font-size:19px}
+  /* ---------- Recruiter Review workspace ---------- */
+  .rv-track{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);
+    border-radius:12px;padding:13px 15px;margin-bottom:10px;transition:border-color .15s,box-shadow .15s,background .15s}
+  .rv-track:hover{border-color:var(--purple-100);box-shadow:var(--shadow)}
+  .rv-track .rv-ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-weight:800;
+    font-size:12px;background:#EEF0F7;color:var(--slate);flex:0 0 30px}
+  .rv-track.approved{border-color:#BFE8CF;background:linear-gradient(90deg,#F2FBF6,#fff)}
+  .rv-track.approved .rv-ic{background:var(--green-bg);color:var(--green)}
+  .rv-track.held{opacity:.62;border-style:dashed}
+  .stepper{display:inline-flex;align-items:center;gap:14px;border:1px solid var(--line);border-radius:10px;padding:6px 14px}
+  .stepper button{width:28px;height:28px;border-radius:7px;border:none;background:var(--purple-50);
+    color:var(--purple-600);font-size:17px;font-weight:800;cursor:pointer;line-height:1}
+  .stepper button:hover{background:var(--purple-100)}
+  .stepper b{font-size:19px;min-width:30px;text-align:center}
+  .stepper span{color:var(--slate);font-size:12px}
+  .sample{background:var(--bg);border:1px solid var(--line);border-left:3px solid var(--violet);
+    border-radius:8px;padding:12px 14px;font-size:13px;color:var(--ink);line-height:1.55}
+  .launch{margin-top:14px;border:1px solid #BFE8CF;background:linear-gradient(180deg,#F2FBF6,#fff);animation:rise .35s ease}
+  /* ---------- NL command box ---------- */
+  .cmdbar{margin-bottom:14px;border:1px solid var(--purple-100);background:linear-gradient(180deg,#FBFAFF,#F6F3FE)}
+  .cmdrow{display:flex;gap:10px;align-items:center}
+  .cmdai{width:32px;height:32px;border-radius:9px;background:var(--violet);color:#fff;display:grid;place-items:center;font-size:16px;flex:0 0 32px}
+  #cmdinput{flex:1;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px;font-family:inherit;background:#fff;color:var(--ink)}
+  #cmdinput:focus{outline:none;border-color:var(--violet);box-shadow:0 0 0 3px rgba(94,0,255,.12)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+  .chips button{background:#fff;border:1px solid var(--purple-100);color:var(--purple-600);border-radius:20px;
+    padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+  .chips button:hover{background:var(--purple-50);border-color:var(--violet);color:var(--violet)}
+  .agent-reply{display:flex;gap:10px;margin-top:13px;background:#fff;border:1px solid var(--purple-100);
+    border-radius:11px;padding:12px 14px;font-size:13px;line-height:1.55;animation:rise .3s ease}
+  .agent-reply .ab{flex:0 0 auto;background:var(--violet);color:#fff;font-size:10px;font-weight:800;
+    border-radius:6px;padding:3px 7px;height:fit-content;letter-spacing:.04em}
+  .note-chip{display:inline-block;background:var(--purple-50);color:var(--violet);font-size:10px;font-weight:800;
+    border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle}
+  @keyframes flashfx{0%{background:#ECE2FF}60%{background:#F6F1FF}100%{background:#fff}}
+  .rv-track.flash{animation:flashfx 1.2s ease}
+  /* ---------- Agent working micro-animations ---------- */
+  .working{display:inline-flex;align-items:center;gap:11px;margin-bottom:16px;position:relative;overflow:hidden;
+    background:linear-gradient(90deg,#F3EEFF,#E9F7F3);border:1px solid var(--purple-100);border-radius:22px;
+    padding:8px 16px 8px 11px;font-size:12.5px;color:var(--ink)}
+  .working:after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);animation:sweep 2.4s infinite}
+  @keyframes sweep{100%{transform:translateX(100%)}}
+  .work-orb{width:19px;height:19px;border-radius:50%;flex:0 0 19px;border:2.5px solid var(--purple-100);
+    border-top-color:var(--violet);animation:spin .8s linear infinite}
+  @keyframes spin{100%{transform:rotate(360deg)}}
+  .work-txt b{color:var(--violet)}
+  .work-txt span{transition:opacity .18s}
+  .work-dots{display:inline-flex;gap:3px;margin-left:3px}
+  .work-dots i{width:5px;height:5px;border-radius:50%;background:var(--violet);opacity:.4;animation:bob 1s infinite}
+  .work-dots i:nth-child(2){animation-delay:.15s}
+  .work-dots i:nth-child(3){animation-delay:.3s}
+  @keyframes bob{0%,100%{opacity:.35;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+  .scanning{position:relative;overflow:hidden}
+  .scanning:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;z-index:3;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--mint),var(--violet),transparent);animation:scanline 2.6s ease-in-out infinite}
+  @keyframes scanline{0%{top:0;opacity:0}10%{opacity:1}50%{top:calc(100% - 2px);opacity:1}90%{opacity:1}100%{top:0;opacity:0}}
+  .feed{list-style:none;margin:0;padding:0}
+  .feedline{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);
+    font-size:13px;animation:slideIn .35s ease}
+  .feedline:last-child{border-bottom:none}
+  .feedline .fdot{width:7px;height:7px;border-radius:50%;background:var(--mint);flex:0 0 7px}
+  .feedline .fic{width:22px;text-align:center;flex:0 0 22px}
+  .feedline .ftime{margin-left:auto;font-size:11px;color:var(--slate);white-space:nowrap}
+  .tag.evaluating{animation:pulse2 1s infinite}
+  @keyframes pulse2{0%,100%{opacity:.45}50%{opacity:1}}
+  @keyframes cellflash{0%{background:#EAF7F3}100%{background:transparent}}
+  .flashcell{animation:cellflash 1s ease;border-radius:6px}
+  /* ---------- Role Filled · share wrap-up ---------- */
+  .rcpt{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .15s,background .15s}
+  .rcpt:hover{border-color:var(--purple-100)}
+  .rcpt.on{border-color:#BFE8CF;background:linear-gradient(90deg,#F5FBF7,#fff)}
+  .rcpt input{width:16px;height:16px;accent-color:var(--violet);cursor:pointer;flex:0 0 16px}
+  .rcpt-h{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate);margin:0 0 9px}
+  .summary-card{border:1px solid var(--line);border-left:3px solid var(--violet);border-radius:10px;padding:14px 16px;font-size:13px;background:var(--bg)}
+  /* ---------- Multi-channel outreach rows ---------- */
+  .chrow{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin-bottom:8px}
+  .chrow .chico{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px;font-weight:800;
+    flex:0 0 30px;background:var(--purple-50);color:var(--purple-600)}
+  .chrow .chbody{flex:1;min-width:0}
+  .chrow .cht{font-weight:700;font-size:13px}
+  .chrow .chs{font-size:11px;color:var(--slate)}
+  .chstatus .tag{white-space:nowrap}
+  /* ---------- Scheduling coordination chat ---------- */
+  .chat-hd{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px;margin-bottom:10px}
+  .chat-hd .ch-ic{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;flex:0 0 24px}
+  .chat-hd.wa .ch-ic{background:#25D366}
+  .chat-hd.sl .ch-ic{background:#611f69}
+  .chat{display:flex;flex-direction:column;gap:8px}
+  .bub{max-width:90%;font-size:12.5px;line-height:1.45;padding:8px 11px;border-radius:13px}
+  .bub .who{font-weight:700;font-size:10.5px;opacity:.85;display:block;margin-bottom:2px}
+  .bub .bt{display:block;font-size:10px;margin-top:3px;opacity:.7}
+  .bub-them{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--ink)}
+  .bub-agent{align-self:flex-end;background:var(--violet);color:#fff;border-bottom-right-radius:4px}
+  .bub-agent .who{opacity:.8}
+  .sched-lock{margin-top:14px;border:1px solid #BFE8CF;background:linear-gradient(180deg,#F2FBF6,#fff);
+    border-radius:12px;padding:14px 16px;display:flex;gap:13px;align-items:center}
+  .sched-lock .lk{font-size:24px;flex:0 0 auto}
+  /* ---------- Guided walkthrough ---------- */
+  #tour{display:none;position:fixed;inset:0;z-index:90}
+  #tour.on{display:block}
+  #tourhole{position:absolute;border-radius:12px;box-shadow:0 0 0 9999px rgba(16,16,46,.55);
+    transition:all .3s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+  #tourpop{position:absolute;width:328px;max-width:calc(100vw - 28px);background:var(--violet);color:#fff;
+    border-radius:14px;box-shadow:0 18px 50px rgba(16,16,46,.4);padding:16px 18px;transition:top .3s ease,left .3s ease}
+  #tourpop:after{content:"";position:absolute;width:0;height:0;border:10px solid transparent}
+  #tourpop.below:after{top:-19px;left:var(--arrow,26px);border-bottom-color:var(--violet)}
+  #tourpop.above:after{bottom:-19px;left:var(--arrow,26px);border-top-color:var(--violet)}
+  #tourpop.right:after{left:-19px;right:auto;top:var(--arrowy,26px);border-right-color:var(--violet)}
+  #tourpop.left:after{right:-19px;left:auto;top:var(--arrowy,26px);border-left-color:var(--violet)}
+  #tourpop h4{margin:7px 0 5px;font-size:15px;color:#fff}
+  #tourpop p{margin:0;font-size:13px;color:rgba(255,255,255,.9);line-height:1.5}
+  .tour-dots{display:flex;gap:5px}
+  .tour-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45)}
+  .tour-dots span.on{background:#fff;width:18px;border-radius:4px}
+  .tour-nav{display:flex;align-items:center;gap:8px;margin-top:15px;flex-wrap:nowrap}
+  .tour-nav .spacer{flex:1}
+  .tour-skip{background:transparent;border:none;color:rgba(255,255,255,.85);font-size:12px;font-weight:600;
+    cursor:pointer;padding:6px 2px;text-decoration:underline;white-space:nowrap}
+  .tour-skip:hover{color:#fff}
+  #tourback{background:transparent;border:1px solid rgba(255,255,255,.5);color:#fff}
+  #tourback:hover{background:rgba(255,255,255,.15)}
+  #tournext{background:#fff;color:var(--violet)}
+  #tournext:hover{background:#EDE7FF}
+  /* ---------- Mission Control ---------- */
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .kpi .n{font-size:24px;font-weight:800}
+  .kpi .l{font-size:12px;color:var(--slate);margin-top:2px}
+  .kpi.hot{border-color:#F3C7CE;background:linear-gradient(180deg,#FFF,#FEF4F6)}
+  .kpi.hot .n{color:var(--red)}
+  @media(max-width:1000px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  .mc{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;margin-bottom:18px}
+  @media(max-width:1000px){.mc{grid-template-columns:1fr}}
+  .qhead{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .qcount{background:var(--red);color:#fff;font-size:12px;font-weight:800;border-radius:20px;padding:2px 9px}
+  .filters{display:flex;gap:6px;margin-left:auto}
+  .filters button{background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;color:var(--slate);cursor:pointer}
+  .filters button.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+  .qitem{display:flex;gap:13px;padding:14px 18px;border-bottom:1px solid var(--line);align-items:flex-start;cursor:pointer}
+  .qitem:last-child{border-bottom:none}
+  .qitem:hover{background:var(--purple-50)}
+  .qic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:17px;flex:0 0 36px}
+  .qbody{flex:1;min-width:0}
+  .qtop{display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+  .qtitle{font-weight:700;font-size:13.5px}
+  .qwhy{font-size:12px;color:var(--slate);line-height:1.45}
+  .qmeta{font-size:11px;color:#8B8698;margin-top:5px}
+  .qactions{display:flex;gap:7px;flex:0 0 auto;align-items:center}
+  .src{font-size:10px;font-weight:800;letter-spacing:.03em;padding:2px 7px;border-radius:5px;background:#EDEAF6;color:var(--purple-600)}
+  .loop{list-style:none;margin:0;padding:0}
+  .loop li{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--line);cursor:pointer}
+  .loop li:last-child{border-bottom:none}
+  .loop li:hover .st{color:var(--purple-600)}
+  .loop .sn{width:22px;height:22px;flex:0 0 22px;border-radius:7px;font-size:11px;font-weight:800;display:grid;place-items:center;background:var(--purple-100);color:var(--purple-600)}
+  .loop li.human .sn{background:var(--amber);color:#fff}
+  .loop .st{font-size:12.5px;font-weight:600}
+  .loop .sd{font-size:11px;color:var(--slate)}
+  .loop .tick{margin-left:auto;font-size:10px;font-weight:800;padding:2px 7px;border-radius:20px}
+  .auto{background:var(--green-bg);color:var(--green)}.hum{background:var(--amber-bg);color:var(--amber)}
+  .legend{display:flex;gap:14px;font-size:11px;color:var(--slate);margin-top:12px}
+  .legend span{display:flex;align-items:center;gap:5px}
+  .dotc{width:9px;height:9px;border-radius:50%}
+  .activity{margin-top:14px;background:linear-gradient(180deg,#FBFAFF,#F5F1FE);border:1px solid var(--purple-100);border-radius:11px;padding:12px 14px}
+  .activity .row{display:flex;gap:8px;font-size:12px;padding:4px 0;color:var(--slate)}
+  .activity .row b{color:var(--ink)}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);flex:0 0 8px;margin-top:5px;box-shadow:0 0 0 0 rgba(18,161,80,.5);animation:pz 1.8s infinite}
+  @keyframes pz{0%{box-shadow:0 0 0 0 rgba(18,161,80,.5)}70%{box-shadow:0 0 0 7px rgba(18,161,80,0)}100%{box-shadow:0 0 0 0 rgba(18,161,80,0)}}
+  .track9{display:flex;gap:3px;align-items:center}
+  .seg9{width:16px;height:6px;border-radius:3px;background:#E4E7F0}
+  .seg9.done{background:var(--purple)}
+  .seg9.cur{background:var(--mint)}
+  .seg9.cur-h{background:var(--amber)}
+  .hbar{width:60px;height:7px;border-radius:6px;background:#E4E7F0;overflow:hidden;display:inline-block;vertical-align:middle}
+  .hbar>i{display:block;height:100%}
+  .needyou{color:var(--red);font-weight:800;font-size:12px}
+  .mini{font-size:11px;color:var(--slate)}
+  /* borrowed: confidence + evidence chips */
+  .conf{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+  .qchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+  .echip{font-size:10.5px;font-weight:600;color:var(--slate);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:2px 8px}
+  /* borrowed: header activity pills */
+  .hpill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px;margin-bottom:2px}
+  .hp-run{background:var(--purple-50);color:var(--purple-600)}
+  .hp-run .hp-dot{width:7px;height:7px;border-radius:50%;background:var(--violet);animation:pz 1.8s infinite}
+  .hp-app{background:var(--amber-bg);color:var(--amber)}
+  /* borrowed: comparative KPI sub-labels */
+  .kpi-sub{font-size:11px;color:var(--slate);margin-top:6px;font-weight:600}
+  .kpi-sub.good{color:var(--green)}
+  .kpi-sub.bad{color:var(--red)}
+  /* borrowed: autonomy dial */
+  .auton{margin-left:auto;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:11px;
+    font-weight:800;padding:5px 9px;cursor:pointer;white-space:nowrap}
+  .auton:hover{filter:brightness(.97)}
+  .al-Suggest{color:var(--violet);border-color:#E0D2FF;background:#F5F1FF}
+  .al-Approve{color:var(--amber);border-color:#F3DDB4;background:var(--amber-bg)}
+  .al-Auto{color:var(--green);border-color:#BFE8CF;background:var(--green-bg)}
+  .al-Watch{color:#65708A;border-color:var(--line);background:#EEF0F4}
+  /* ---------- Landing page ---------- */
+  .landing{max-width:960px;margin:0 auto;text-align:center;padding:24px 10px 40px}
+  .land-logo-img{width:240px;max-width:82%;height:auto;display:block;margin:10px auto 14px}
+  .land-tag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--violet)}
+  .land-h1{font-size:34px;font-weight:800;margin:8px 0 10px}
+  .land-sub{font-size:15px;color:var(--slate);line-height:1.6;max-width:640px;margin:0 auto 30px}
+  .land-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:left}
+  @media(max-width:820px){.land-cards{grid-template-columns:1fr}}
+  .land-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;cursor:pointer;
+    box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s,border-color .12s}
+  .land-card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(76,29,149,.14);border-color:var(--purple-100)}
+  .lc-ic{width:40px;height:40px;border-radius:11px;background:var(--purple-50);color:var(--violet);
+    display:grid;place-items:center;font-size:18px;font-weight:800;margin-bottom:12px}
+  .land-card h3{margin:0 0 6px;font-size:16px}
+  .land-card p{margin:0 0 12px;font-size:12.5px;color:var(--slate);line-height:1.5}
+  .lc-go{font-size:12px;font-weight:800;color:var(--violet)}
+  .land-hint{margin-top:26px;font-size:12.5px;color:var(--slate);background:var(--purple-50);
+    border-radius:12px;padding:12px 16px;display:inline-block;max-width:640px}
+  /* ---------- Flow overview page ---------- */
+  .flow-head{text-align:center;margin-bottom:26px}
+  .flow-head h1{font-size:26px;margin:0 0 6px}
+  .flow-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:900px){.flow-grid{grid-template-columns:1fr}}
+  .phase{border:1px solid var(--purple-100);background:linear-gradient(180deg,#FAF8FF,#EFF7F4);
+    border-radius:16px;padding:15px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .phase-hd{font-size:12.5px;color:var(--slate);margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .phase-tag{background:var(--violet);color:#fff;font-size:10px;font-weight:800;letter-spacing:.04em;border-radius:6px;padding:3px 8px}
+  .phase-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:900px){.phase-grid{grid-template-columns:1fr}}
+  .loop li.prep{box-shadow:inset 2px 0 0 var(--violet);padding-left:9px}
+  .loop-phase{font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--violet);text-transform:uppercase;
+    padding:2px 0 4px!important;border-bottom:none!important}
+  .fnode{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;cursor:pointer;
+    box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s;position:relative;overflow:hidden}
+  .fnode:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(76,29,149,.14);border-color:var(--purple-100)}
+  .fnode .n{width:30px;height:30px;border-radius:9px;background:var(--purple);color:#fff;font-weight:800;
+    display:grid;place-items:center;font-size:14px;margin-bottom:10px}
+  .fnode h3{margin:0 0 6px;font-size:15px}
+  .fnode p{margin:0 0 10px;font-size:12px;color:var(--slate);line-height:1.45}
+  .fnode .out{font-size:11px;color:var(--purple-600);font-weight:700}
+  .fnode .stripe{position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--purple),var(--mint))}
+  .term{text-align:center;margin:22px auto 0;max-width:420px;background:var(--purple);color:#fff;border-radius:14px;
+    padding:16px;font-weight:700}
+  .backbar{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .backbtn{background:#fff;border:1px solid var(--line);border-radius:9px;padding:7px 13px;font-size:13px;
+    font-weight:700;cursor:pointer;color:var(--purple-600)}
+  .backbtn:hover{background:var(--purple-50)}
+  .stepnav{display:flex;gap:8px;margin-left:auto}
+  .stepnav button{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:13px;
+    cursor:pointer;font-weight:700;color:var(--slate)}
+  .stepnav button:hover{background:var(--purple-50);color:var(--purple-600)}
+  .stepnav button:disabled{opacity:.4;cursor:default}
+  .screen{display:none}
+  .screen.on{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .flag{display:flex;gap:12px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;align-items:flex-start;background:#fff}
+  .flag .ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:16px;flex:0 0 34px}
+  .timeline{list-style:none;margin:0;padding:0;position:relative}
+  .timeline:before{content:"";position:absolute;left:15px;top:6px;bottom:6px;width:2px;background:var(--line)}
+  .timeline li{position:relative;padding:0 0 18px 44px}
+  .timeline li .dot{position:absolute;left:8px;top:1px;width:16px;height:16px;border-radius:50%;
+    background:#fff;border:3px solid var(--purple)}
+  .timeline li.done .dot{background:var(--purple)}
+  .timeline li.now .dot{border-color:var(--amber);box-shadow:0 0 0 4px var(--amber-bg)}
+  .timeline li h4{margin:0 0 2px;font-size:14px}
+  .timeline li p{margin:0;font-size:12px;color:var(--slate)}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="side">
+    <div class="brand" onclick="go('home')" style="cursor:pointer">
+      <img class="ef-logo" src="data:image/png;base64,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" alt="eightfold.ai">
+      <small class="brand-sub">Talent Intelligence</small>
+    </div>
+    <ul class="nav" id="nav"></ul>
+    <div class="divider"></div>
+    <ul class="nav">
+      <li onclick="go('overview')"><span class="num">⌂</span> Flow overview map</li>
+    </ul>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <span class="role-pill">AI Recruiter Agent</span>
+      <span class="crumb" id="crumb"><b>Flow overview</b></span>
+      <span class="spacer"></span>
+      <div class="seg" id="viewseg">
+        <button class="on" data-v="agent" onclick="setView('agent')">⚙ Agent view</button>
+        <button data-v="recruiter" onclick="setView('recruiter')">👤 Recruiter view</button>
+      </div>
+      <button class="btn present-btn sm" onclick="enterPresent()">▶ Present</button>
+      <div class="avatar">RB</div>
+    </div>
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- Context modal -->
+<div class="modal-back" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
+
+<!-- Guided walkthrough -->
+<div id="tour">
+  <div id="tourhole"></div>
+  <div id="tourpop">
+    <div class="tour-dots" id="tourdots"></div>
+    <h4 id="tourtitle"></h4>
+    <p id="tourtext"></p>
+    <div class="tour-nav">
+      <button class="tour-skip" onclick="endTour()">Skip tour</button>
+      <span class="spacer"></span>
+      <button class="btn ghost sm" id="tourback" onclick="tourPrev()">Back</button>
+      <button class="btn sm" id="tournext" onclick="tourNext()">Next ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- Presentation / recording control bar -->
+<div class="stagebar" id="stagebar">
+  <span class="sc" id="scnum">01 / 11</span>
+  <div class="cap" id="sccap"></div>
+  <div class="stage-ctrl">
+    <button class="stbtn" onclick="prevScene()">‹ Back</button>
+    <button class="stbtn primary" onclick="nextScene()">Next ›</button>
+    <button class="exit" onclick="exitPresent()" aria-label="Exit present mode">✕</button>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  {n:0, key:'overview', title:'Flow overview'},
+  {n:1, key:'s1', title:'Understand the Role', desc:'Analyze JD, learn from past hires & HM preferences, estimate difficulty and time-to-fill.', out:'AI Hiring Plan · Confidence Score · Sourcing strategy'},
+  {n:2, key:'s2', title:'Build the Talent Plan', desc:'Assemble candidates across 5 pools: high-confidence, refresh, internal mobility, champions, external.', out:'Prioritized execution plan'},
+  {n:3, key:'s3', title:'Recruiter Review', desc:'One consolidated AI plan. Approve all or approve individually.', out:'Approved plan of record'},
+  {n:4, key:'s4', title:'Execution', desc:'Personalized outreach, profile refresh, referral campaigns, internal opportunity notices.', out:'Outreach in motion'},
+  {n:5, key:'s5', title:'Qualify & Score', desc:'Agent evaluates responses — interested? qualified? needs recruiter or screening?', out:'Candidate status'},
+  {n:6, key:'s6', title:'Orchestrate & Schedule', desc:'Sourcing agent hands to the scheduling agent — next best action, calendars and panels up to interview. Offer stays human-led.', out:'Interviews scheduled'},
+  {n:7, key:'s7', title:'Human Escalation', desc:'Agent knows when automation stops and hands off to the recruiter.', out:'Recruiter tasks'},
+  {n:8, key:'s8', title:'Continuous Optimization', desc:'Monitors pipeline health & auto-recommends corrective actions.', out:'Health signals + actions'},
+  {n:9, key:'s9', title:'Role Filled', desc:'Agent summarizes outcomes and lessons for future hiring.', out:'Hiring retrospective'},
+];
+
+/* ---------- Screen builders ---------- */
+function overview(){
+  return `
+  <div class="flow-head">
+    <h1>AI Recruiting Agent — end-to-end flow</h1>
+    <p class="sub">New position created → agent-driven hiring. Click any step to see its mock screen.</p>
+  </div>
+  <div class="ai-note" style="margin-bottom:22px">
+    <span class="ai-badge">TRIGGER</span>
+    <div><b>New Position Created</b> — Senior Backend Engineer (Req #ENG-4471) opened by hiring manager Priya Nair. The agent begins automatically.</div>
+  </div>
+  <div class="phase">
+    <div class="phase-hd"><span class="phase-tag">◇ PREP PHASE</span> The agent runs these two back-to-back, autonomously — producing the single plan you review in Step 3.</div>
+    <div class="phase-grid">
+      ${STEPS.filter(s=>s.n===1||s.n===2).map(fnode).join('')}
+    </div>
+  </div>
+  <div class="flow-grid">
+    ${STEPS.filter(s=>s.n>=3).map(fnode).join('')}
+  </div>
+  <div class="term">✓ Role Filled — retrospective generated & fed back into the model</div>`;
+}
+function fnode(s){
+  return `
+      <div class="fnode" onclick="go('${s.key}')">
+        <span class="stripe"></span>
+        <div class="n">${s.n}</div>
+        <h3>${s.title}</h3>
+        <p>${s.desc}</p>
+        <div class="out">→ ${s.out}</div>
+      </div>`;
+}
+function landing(){
+  return `
+  <div class="landing">
+    <img class="land-logo-img" src="data:image/png;base64,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" alt="eightfold.ai">
+    <div class="land-tag">Talent Intelligence</div>
+    <h1 class="land-h1">The AI Recruiting Agent</h1>
+    <p class="land-sub">A working prototype of how the agent sources, screens and schedules — running the whole hiring loop autonomously, and pulling the recruiter in only when a human is truly needed. Pick a way in.</p>
+    <div class="land-cards">
+      <div class="land-card" onclick="enterPresent()">
+        <div class="lc-ic">▶</div>
+        <h3>Play the story</h3>
+        <p>A guided, narrated run through all 9 steps — Robin's day, start to finish. Best for a first look; use ← → to move between scenes.</p>
+        <span class="lc-go">Start the walkthrough →</span>
+      </div>
+      <div class="land-card" onclick="go('overview')">
+        <div class="lc-ic">▦</div>
+        <h3>Explore the flow</h3>
+        <p>See the entire 9-step flow on one map. Click any step to open its live, interactive mock and poke around at your own pace.</p>
+        <span class="lc-go">Open flow overview →</span>
+      </div>
+      <div class="land-card" onclick="go('mc')">
+        <div class="lc-ic">◎</div>
+        <h3>Jump into Mission Control</h3>
+        <p>The recruiter's cockpit — the "needs you" queue, the live agent loop, and the requisition portfolio. Includes a 30-second guided tour.</p>
+        <span class="lc-go">Open Mission Control →</span>
+      </div>
+    </div>
+    <div class="land-hint">Tip: on any screen, use the top-right <b>Agent / Recruiter</b> toggle to switch between what the agent does in the background and what the recruiter actually sees.</div>
+  </div>`;
+}
+
+const S = {};
+
+/* Mission Control — recruiter cockpit / landing */
+const QUEUE = [
+  ['t-red','☎','Call Ana Ferreira — competing offer','STEP 7 · ESCALATION','s7','Agent paused automation. Offer expires in 48h. Talking points ready.','Senior Backend Engineer · #ENG-4471 · finalist','Context','Call now','High',['fit 94%','offer expires 48h']],
+  ['t-amber','✓','Approve talent plan — Staff Data Scientist','STEP 3 · APPROVAL','s3','Contact 12 · refresh 30 · activate 14 champions · notify 6 internal.','#DS-2210 · plan built 2h ago · confidence 74','Review','Approve all','Med',['confidence 74','62 in plan']],
+  ['t-amber','⚠','Pipeline weakening — Product Designer','STEP 8 · OPTIMIZATION','s8','Response rate dropped to 19%. Agent recommends expanding geo + 2nd referral campaign.','#PD-1180 · coverage 1.8× · 21 days open','Dismiss','Apply fix','High',['response 19%','coverage 1.8×']],
+  ['t-purple','★','Executive candidate — white-glove handling','STEP 7 · ESCALATION','s7','VP Engineering prospect entered pipeline. Recommends a personal recruiter touch.','#EXE-0090 · sourced via referral','Profile','Take over','Med',['VP level','via referral']],
+  ['t-blue','👤','HM requested you join debrief','STEP 7 · ESCALATION','s7','Priya Nair wants recruiter input on panel feedback before an offer.','#ENG-4471 · panel completed yesterday','Feedback','Schedule','Ready',['panel done','HM requested']],
+  ['t-amber','✓','Approve external expansion — DevOps Engineer','STEP 3 · APPROVAL','s3','Internal pool exhausted. Proposes opening external sourcing in 3 metros.','#OPS-0455 · coverage 2.1×','Review','Approve','Med',['coverage 2.1×','3 metros']],
+  ['t-amber','⏳','No response after 3 attempts — J. Whitmore','STEP 7 · ESCALATION','s7','Strong match gone quiet 6 days. Recommends a personal note or archive.','#ENG-4471 · fit 89%','Archive','Reach out','High',['fit 89%','quiet 6d']],
+];
+const CONF_CLS={High:'t-red',Med:'t-purple',Ready:'t-green'};
+const AUTON={1:'Auto',2:'Auto',3:'Approve',4:'Auto',5:'Auto',6:'Auto',7:'Suggest',8:'Suggest',9:'Auto'};
+const AUTON_ORDER=['Suggest','Approve','Auto','Watch'];
+function cycleAuton(step,btn){
+  const nx=AUTON_ORDER[(AUTON_ORDER.indexOf(AUTON[step])+1)%AUTON_ORDER.length];
+  AUTON[step]=nx; btn.className='auton al-'+nx; btn.textContent=nx+' ▾';
+}
+const LOOP = [
+  [1,'Understand the Role','JD analysis · confidence · time-to-fill',false],
+  [2,'Build the Talent Plan','5 candidate pools ranked',false],
+  [3,'Recruiter Review','Approve plan → your queue',true],
+  [4,'Execution','Outreach · refresh · referrals',false],
+  [5,'Qualify & Score','Evaluate responses',false],
+  [6,'Orchestrate & Schedule','Scheduling agent · panels, reminders',false],
+  [7,'Human Escalation','Hands off → your queue',true],
+  [8,'Continuous Optimization','Alerts → your queue',true],
+  [9,'Role Filled','Retrospective · feeds Step 1',false],
+];
+const REQS = [
+  ['Senior Backend Engineer','ENG-4471',7,true,82,78,'var(--green)','31d','t-green','☎ Call Ana',true],
+  ['Staff Data Scientist','DS-2210',3,true,74,66,'var(--amber)','19d','t-grey','✓ Approve plan',true],
+  ['Product Designer','PD-1180',8,true,61,34,'var(--red)','21d','t-amber','⚠ Weak pipeline',true],
+  ['DevOps Engineer','OPS-0455',3,true,70,58,'var(--amber)','12d','t-grey','✓ Approve expand',true],
+  ['VP Engineering','EXE-0090',7,true,55,62,'var(--amber)','8d','t-grey','★ Exec review',true],
+  ['Frontend Engineer','ENG-4390',6,false,88,81,'var(--green)','24d','t-green','—',false],
+  ['Sales Engineer','GTM-3301',5,false,79,72,'var(--green)','15d','t-green','—',false],
+  ['Technical Writer','DOC-0071',9,false,90,88,'var(--green)','28d','t-green','✓ Filled',false],
+];
+/* Rich context for each Needs-You item — shown in the modal before any action */
+const DETAILS = [
+  { icon:'☎', iconClass:'t-red', title:'Call Ana Ferreira', meta:'Senior Backend Engineer · #ENG-4471 · Finalist',
+    tag:'STEP 7 · ESCALATION', step:'s7', primary:'Start call & log', secondary:'Snooze 1 day',
+    success:'Call logged — Ana flagged as priority',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">WHY THIS NEEDS YOU</span><div>Ana signaled a <b>competing offer</b> during scheduling, so automation is paused. A personal call within 24h materially improves close odds — beyond what the agent should handle alone.</div></div>
+      <h4>Candidate context</h4>
+      <div class="ctx-grid">
+        <div class="kv2"><span>Stage</span><b>Panel complete</b></div>
+        <div class="kv2"><span>Fit score</span><b>94%</b></div>
+        <div class="kv2"><span>Source</span><b>Silver medalist · #ENG-3980</b></div>
+        <div class="kv2"><span>Competing offer</span><b>Fintech scale-up · expires 48h</b></div>
+        <div class="kv2"><span>Comp expectation</span><b>$195k base</b></div>
+        <div class="kv2"><span>Last contact</span><b>Yesterday · by agent</b></div>
+      </div>
+      <h4>AI-suggested talking points</h4>
+      <ul class="tp">
+        <li>💬 Acknowledge the competing offer; thank her for the transparency.</li>
+        <li>💬 Reinforce momentum — the panel is already done, a decision is close.</li>
+        <li>💬 Share the comp range and flexibility on start date.</li>
+        <li>💬 Offer to expedite the final step to match her timeline.</li>
+      </ul>` },
+  { icon:'✓', iconClass:'t-amber', title:'Approve talent plan — Staff Data Scientist', meta:'#DS-2210 · plan built 2h ago',
+    tag:'STEP 3 · APPROVAL', step:'s3', primary:'Approve all & launch', secondary:'Review individually',
+    success:'Plan approved — agent is executing',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">CONFIDENCE 74</span><div>Fillable in-network in ~3 weeks. Nothing sends until you approve — uncheck anything you want to hold.</div></div>
+      <h4>The plan</h4>
+      <label class="opt"><input type="checkbox" checked> Contact <b>12 candidates</b> — personalized outreach</label>
+      <label class="opt"><input type="checkbox" checked> Refresh <b>30 profiles</b> — conversational update</label>
+      <label class="opt"><input type="checkbox" checked> Activate <b>14 referral champions</b></label>
+      <label class="opt"><input type="checkbox" checked> Notify <b>6 internal candidates</b></label>` },
+  { icon:'⚠', iconClass:'t-amber', title:'Pipeline weakening — Product Designer', meta:'#PD-1180 · 21 days open',
+    tag:'STEP 8 · OPTIMIZATION', step:'s8', primary:'Apply selected fixes', secondary:'Dismiss',
+    success:'Fixes applied — agent expanding the search',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">SIGNAL</span><div>Response rate fell to <b>19%</b> and coverage is <b>1.8×</b> — below the 3× target. The agent recommends the fixes below.</div></div>
+      <h4>Current health</h4>
+      <div class="ctx-grid">
+        <div class="kv2"><span>Response rate</span><b>19% ↓</b></div>
+        <div class="kv2"><span>Coverage</span><b>1.8×</b></div>
+        <div class="kv2"><span>Days open</span><b>21</b></div>
+        <div class="kv2"><span>Candidates active</span><b>14</b></div>
+      </div>
+      <h4>Recommended fixes</h4>
+      <label class="opt"><input type="checkbox" checked> Expand geography to remote-US + Austin</label>
+      <label class="opt"><input type="checkbox" checked> Launch a second referral campaign</label>
+      <label class="opt"><input type="checkbox"> Refresh 30 more silver-medalist profiles</label>` },
+  { icon:'★', iconClass:'t-purple', title:'Executive candidate — white-glove handling', meta:'#EXE-0090 · VP Engineering',
+    tag:'STEP 7 · ESCALATION', step:'s7', primary:'Take ownership', secondary:'Assign to…',
+    success:'You now own this candidate',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">WHY THIS NEEDS YOU</span><div>A <b>VP Engineering</b> prospect entered via referral. Executive candidates need a personal recruiter relationship — the agent will hold automated outreach.</div></div>
+      <h4>Prospect context</h4>
+      <div class="ctx-grid">
+        <div class="kv2"><span>Level</span><b>VP Engineering</b></div>
+        <div class="kv2"><span>Source</span><b>Referral · A. Rao</b></div>
+        <div class="kv2"><span>Current</span><b>Director, Eng · scale-up</b></div>
+        <div class="kv2"><span>Signal</span><b>Warm — open to a chat</b></div>
+      </div>` },
+  { icon:'👤', iconClass:'t-blue', title:'HM requested you join debrief', meta:'#ENG-4471 · panel completed',
+    tag:'STEP 7 · ESCALATION', step:'s7', primary:'Schedule debrief', secondary:'Send notes instead',
+    success:'Debrief scheduled with Priya',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">HIRING MANAGER</span><div>Priya Nair wants recruiter input on panel feedback before an offer decision on <b>Marcus Lee</b>.</div></div>
+      <h4>Panel feedback summary</h4>
+      <ul class="tp">
+        <li>✅ Strong system design & Kafka depth — 2 interviewers</li>
+        <li>✅ Culture add — collaborative, mentors well</li>
+        <li>⚠ Wants to confirm leadership-scope expectations</li>
+      </ul>` },
+  { icon:'✓', iconClass:'t-amber', title:'Approve external expansion — DevOps Engineer', meta:'#OPS-0455 · coverage 2.1×',
+    tag:'STEP 3 · APPROVAL', step:'s3', primary:'Approve expansion', secondary:'Not yet',
+    success:'External sourcing opened',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">WHY NOW</span><div>The internal + network pool is exhausted at 2.1× coverage. To hit the timeline, the agent proposes opening external sourcing.</div></div>
+      <h4>Proposed metros</h4>
+      <label class="opt"><input type="checkbox" checked> Austin, TX</label>
+      <label class="opt"><input type="checkbox" checked> Denver, CO</label>
+      <label class="opt"><input type="checkbox" checked> Remote — US</label>` },
+  { icon:'⏳', iconClass:'t-amber', title:'No response after 3 attempts — J. Whitmore', meta:'#ENG-4471 · fit 89%',
+    tag:'STEP 7 · ESCALATION', step:'s7', primary:'Send personal note', secondary:'Archive',
+    success:'Personal note sent to J. Whitmore',
+    body:`<div class="ai-note" style="margin-bottom:6px"><span class="ai-badge">WHY THIS NEEDS YOU</span><div>A strong match (fit 89%) has gone quiet for <b>6 days</b> across 3 automated touches. A personal note from you often re-engages — or archive to keep the pipeline clean.</div></div>
+      <h4>Outreach history</h4>
+      <div class="ctx-grid">
+        <div class="kv2"><span>Touch 1</span><b>Day 0 · opened</b></div>
+        <div class="kv2"><span>Touch 2</span><b>Day 3 · opened</b></div>
+        <div class="kv2"><span>Touch 3</span><b>Day 6 · no open</b></div>
+        <div class="kv2"><span>Fit score</span><b>89%</b></div>
+      </div>` },
+];
+function openQueue(i){
+  const d=DETAILS[i];
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-head">
+      <div class="mic ${d.iconClass}">${d.icon}</div>
+      <div><h2>${d.title}</h2><div class="muted">${d.meta}</div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <span class="src" style="display:inline-block;margin-bottom:14px">${d.tag}</span>
+      ${d.body}
+    </div>
+    <div class="modal-foot">
+      <button class="btn ghost sm" onclick="closeModal();go('${d.step}')">Open full step →</button>
+      <span class="spacer"></span>
+      ${d.secondary?`<button class="btn ghost" onclick="closeModal()">${d.secondary}</button>`:''}
+      <button class="btn" onclick="confirmAction(${i})">${d.primary}</button>
+    </div>`;
+  document.getElementById('modalback').classList.add('on');
+}
+function confirmAction(i){
+  const d=DETAILS[i];
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-success">
+      <div class="big">✅</div>
+      <h2>${d.success}</h2>
+      <p class="muted">The agent will take it from here.</p>
+    </div>`;
+  resolveItem(i);
+  setTimeout(closeModal, 1500);
+}
+function resolveItem(i){
+  const row=document.querySelector('.qitem[data-idx="'+i+'"]'); if(row) row.remove();
+  const nc=document.getElementById('needcount'); if(nc) nc.textContent=Math.max(0,(parseInt(nc.textContent)||0)-1);
+  const qc=document.querySelector('.qcount'); if(qc) qc.textContent=Math.max(0,(parseInt(qc.textContent)||0)-1);
+}
+function openReq(i){
+  const r=REQS[i];
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-head">
+      <div class="mic t-purple">▦</div>
+      <div><h2>${r[0]}</h2><div class="muted">#${r[1]} · owned by Robin R.</div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="ctx-grid">
+        <div class="kv2"><span>Stage in agent flow</span><b>Step ${r[2]} of 9</b></div>
+        <div class="kv2"><span>Confidence</span><b>${r[4]}</b></div>
+        <div class="kv2"><span>Pipeline health</span><b>${r[5]}/100</b></div>
+        <div class="kv2"><span>Time-to-fill</span><b>${r[7]}</b></div>
+        <div class="kv2"><span>Needs you</span><b>${r[10]?r[9]:'Nothing right now — agent running'}</b></div>
+        <div class="kv2"><span>Layer</span><b>${r[3]?'Awaiting recruiter':'Automated'}</b></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <span class="spacer"></span>
+      <button class="btn ghost" onclick="closeModal()">Close</button>
+      <button class="btn" onclick="closeModal();go('s${r[2]}')">Open current step →</button>
+    </div>`;
+  document.getElementById('modalback').classList.add('on');
+}
+function closeModal(){ document.getElementById('modalback').classList.remove('on'); }
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && document.getElementById('modalback').classList.contains('on')) closeModal();
+});
+
+/* ---------- Guided walkthrough ---------- */
+const TOUR = [
+  {sel:'#mcqueue', title:'Start here: what needs you', text:'This is your only to-do list — the moments the agent can\'t handle alone. Click any card to see the agent\'s reasoning and act on it.'},
+  {sel:'#mcloop', title:'The agent runs the rest', text:'All 9 steps run automatically. Purple steps are fully autonomous; amber ones (3, 7, 8) surface to you in the queue above.'},
+  {sel:'#mcportfolio', title:'Manage by exception', text:'Every open role and where it sits in the flow. Click any row for details. You\'re steering 18 reqs without touching most of them.'}
+];
+let tourIndex=0, tourSeen=false;
+function startTour(){ tourIndex=0; document.getElementById('tour').classList.add('on'); showTourStep(); }
+function endTour(){ document.getElementById('tour').classList.remove('on'); tourSeen=true; }
+function tourNext(){ if(tourIndex>=TOUR.length-1){ endTour(); } else { tourIndex++; showTourStep(); } }
+function tourPrev(){ if(tourIndex>0){ tourIndex--; showTourStep(); } }
+function showTourStep(){
+  const s=TOUR[tourIndex];
+  const el=document.querySelector(s.sel);
+  if(!el){ endTour(); return; }
+  el.scrollIntoView({block:'center',behavior:'smooth'});
+  setTimeout(()=>{
+    const r=el.getBoundingClientRect(), pad=8;
+    const hole=document.getElementById('tourhole');
+    hole.style.left=(r.left-pad)+'px'; hole.style.top=(r.top-pad)+'px';
+    hole.style.width=(r.width+pad*2)+'px'; hole.style.height=(r.height+pad*2)+'px';
+    document.getElementById('tourtitle').textContent=s.title;
+    document.getElementById('tourtext').textContent=s.text;
+    document.getElementById('tourdots').innerHTML=TOUR.map((_,i)=>`<span class="${i===tourIndex?'on':''}"></span>`).join('');
+    document.getElementById('tourback').style.visibility=tourIndex===0?'hidden':'visible';
+    document.getElementById('tournext').textContent=tourIndex===TOUR.length-1?'Got it!':'Next ›';
+    const pop=document.getElementById('tourpop'), pw=328, gap=16, mrg=12;
+    const ph=pop.offsetHeight||170, vw=window.innerWidth, vh=window.innerHeight;
+    const tall=r.height>vh*0.5;
+    let placement, top, left;
+    if(tall && vw-r.right>=pw+gap){                 // beside, to the right
+      placement='right'; left=r.right+gap;
+      top=Math.min(Math.max(mrg, r.top+r.height/2-ph/2), vh-ph-mrg);
+    } else if(tall && r.left>=pw+gap){              // beside, to the left
+      placement='left'; left=r.left-pw-gap;
+      top=Math.min(Math.max(mrg, r.top+r.height/2-ph/2), vh-ph-mrg);
+    } else if(vh-r.bottom>=ph+gap){                 // below
+      placement='below'; top=r.bottom+gap;
+      left=Math.min(Math.max(mrg, r.left), vw-pw-mrg);
+    } else {                                        // above
+      placement='above'; top=Math.max(mrg, r.top-ph-gap);
+      left=Math.min(Math.max(mrg, r.left), vw-pw-mrg);
+    }
+    pop.classList.remove('below','above','left','right'); pop.classList.add(placement);
+    if(placement==='below'||placement==='above'){
+      pop.style.setProperty('--arrow', Math.min(Math.max(16, r.left+r.width/2-left), pw-16)+'px');
+    } else {
+      pop.style.setProperty('--arrowy', Math.min(Math.max(16, r.top+r.height/2-top), ph-16)+'px');
+    }
+    pop.style.top=top+'px'; pop.style.left=left+'px';
+  }, 320);
+}
+
+function trackHtml(now,human){
+  let out='';
+  for(let i=1;i<=9;i++){
+    let cls='seg9';
+    if(i<now)cls+=' done'; else if(i===now)cls+= human?' cur-h':' cur';
+    out+=`<span class="${cls}"></span>`;
+  }
+  const title=(STEPS.find(s=>s.n===now)||{}).title||'';
+  return `<div class="track9">${out}</div><div class="mini" style="margin-top:6px">Step ${now} of 9${title?' · '+title:''}</div>`;
+}
+S.mc = ()=>`
+  <div style="display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap">
+    <div><div class="h1">Mission Control</div>
+    <p class="sub" style="margin-bottom:0">Your AI recruiter is running 18 requisitions autonomously. Here's what needs <b>you</b> today.</p></div>
+    <span class="spacer"></span>
+    <span class="hpill hp-run"><span class="hp-dot"></span>24 agents running</span>
+    <span class="hpill hp-app">9 pending approval</span>
+    <button class="btn ghost sm" onclick="startTour()" style="margin-bottom:2px">✨ Take a 30-second tour</button>
+  </div>
+  <div style="height:18px"></div>
+  <div class="kpis">
+    <div class="kpi rise" style="animation-delay:.02s"><div class="n" data-count="18">0</div><div class="l">Open reqs</div><div class="kpi-sub">4 evergreen</div></div>
+    <div class="kpi rise" style="animation-delay:.08s"><div class="n" data-count="412">0</div><div class="l">Candidates in motion</div><div class="kpi-sub good">▲ +38 this week</div></div>
+    <div class="kpi hot rise" style="animation-delay:.14s"><div class="n" data-count="7" id="needcount">0</div><div class="l">Need your attention</div><div class="kpi-sub bad">3 high priority</div></div>
+    <div class="kpi rise" style="animation-delay:.2s"><div class="n" data-count="5">0</div><div class="l">Offers out</div><div class="kpi-sub">2 awaiting response</div></div>
+    <div class="kpi rise" style="animation-delay:.26s"><div class="n" data-count="33" data-suffix="d">0</div><div class="l">Avg time-to-fill</div><div class="kpi-sub good">vs 41d target</div></div>
+  </div>
+  <div class="mc">
+    <div class="card" id="mcqueue">
+      <div class="qhead"><span class="sec-title">Needs you</span><span class="qcount">7</span>
+        <div class="filters"><button class="on">All</button><button>Escalations</button><button>Approvals</button><button>Pipeline</button></div>
+      </div>
+      ${QUEUE.map((q,i)=>{const hero=q[6].includes('ENG-4471');return `
+        <div class="qitem ${hero?'hero':''}" data-idx="${i}" onclick="openQueue(${i})">
+          <div class="qic ${q[0]}">${q[1]}</div>
+          <div class="qbody">
+            <div class="qtop"><span class="qtitle">${q[2]}</span><span class="src">${q[3]}</span><span class="conf ${CONF_CLS[q[9]]}">${q[9]==='Ready'?'Ready':q[9]+' confidence'}</span>${hero?'<span class="hero-chip">★ HERO STORY</span>':''}</div>
+            <div class="qwhy">${q[5]}</div>
+            <div class="qchips">${(q[10]||[]).map(c=>`<span class="echip">${c}</span>`).join('')}</div>
+            <div class="qmeta">${q[6]}</div>
+          </div>
+          <div class="qactions"><button class="btn ghost sm" onclick="event.stopPropagation();openQueue(${i})">Why?</button><button class="btn sm" onclick="event.stopPropagation();openQueue(${i})">${q[8]}</button><span class="qgo">Review →</span></div>
+        </div>`}).join('')}
+    </div>
+    <div class="card pad" id="mcloop">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <span class="sec-title">The agent loop</span><span class="spacer"></span>
+        <span class="muted" style="font-size:11px">autonomy →</span>
+      </div>
+      <ul class="loop">
+        <li class="loop-phase">◇ Prep phase · runs autonomously</li>
+        ${LOOP.map(l=>`<li class="${l[3]?'human':''} ${(l[0]===1||l[0]===2)?'prep':''}" onclick="go('s${l[0]}')">
+          <span class="sn">${l[0]}</span>
+          <div><div class="st">${l[1]}</div><div class="sd">${l[2]}</div></div>
+          <button class="auton al-${AUTON[l[0]]}" onclick="event.stopPropagation();cycleAuton(${l[0]},this)" title="Click to change autonomy">${AUTON[l[0]]} ▾</button></li>`).join('')}
+      </ul>
+      <div class="muted" style="font-size:11px;margin-top:10px">Set how much each step can act on its own — click a level:</div>
+      <div class="legend">
+        <span><span class="dotc" style="background:var(--violet)"></span>Suggest</span>
+        <span><span class="dotc" style="background:var(--amber)"></span>Approve</span>
+        <span><span class="dotc" style="background:var(--green)"></span>Auto</span>
+        <span><span class="dotc" style="background:#8B8698"></span>Watch</span>
+      </div>
+      <div class="activity">
+        <div style="font-weight:800;font-size:11px;color:var(--purple-600);margin-bottom:6px;letter-spacing:.04em">LIVE AGENT ACTIVITY</div>
+        <div class="row"><span class="pulse"></span><div><b>Scheduled</b> AI screening for 3 candidates · #DS-2210</div></div>
+        <div class="row"><span class="pulse"></span><div><b>Re-ranked</b> 24 refreshed profiles · #PD-1180</div></div>
+        <div class="row"><span class="pulse"></span><div><b>Sent</b> referral campaign to 16 champions · #OPS-0455</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="mcportfolio">
+    <div class="qhead"><span class="sec-title">Requisition portfolio · manage by exception</span>
+      <span class="spacer"></span><button class="btn ghost sm">＋ New requisition</button></div>
+    <table class="rowlink">
+      <thead><tr><th>Requisition</th><th>Stage in agent flow</th><th>Confidence</th><th>Pipeline health</th><th>Time-to-fill</th><th>Needs you</th></tr></thead>
+      <tbody>
+        ${REQS.map((r,i)=>`<tr class="${r[1]==='ENG-4471'?'hero':''}" onclick="openReq(${i})">
+          <td><b>${r[0]}</b>${r[1]==='ENG-4471'?'<span class="hero-chip">★ HERO</span>':''}<div class="mini">#${r[1]}</div></td>
+          <td>${trackHtml(r[2],r[3])}</td>
+          <td><b>${r[4]}</b></td>
+          <td><span class="hbar"><i style="width:${r[5]}%;background:${r[6]}"></i></span> <span class="mini">${r[5]}</span></td>
+          <td><span class="tag ${r[8]}">${r[7]}</span></td>
+          <td>${r[10]?`<span class="needyou">${r[9]}</span>`:`<span class="mini">${r[9]}</span>`}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="margin-top:14px">The 9-step flow runs automatically on every req. Mission Control only pulls you in at steps 3, 7 and 8 — approvals, escalations and pipeline fixes. Click any step number, queue item, or loop stage to open its screen.</p>`;
+
+/* Step 1 — Understand the Role */
+S.s1 = ()=>`
+  <div class="h1">Understand the Role</div>
+  <p class="sub">Senior Backend Engineer · Req #ENG-4471 · Remote (US) · Hiring manager: Priya Nair</p>
+  <div class="grid g3" style="margin-bottom:16px">
+    <div class="card pad rise" style="display:flex;gap:16px;align-items:center">
+      <div class="ring" id="confring" style="--p:0"><div><span data-count="82">0</span></div></div>
+      <div><div style="font-weight:800">Confidence Score</div><div class="muted">Fillable in-network. Moderate competition.</div></div>
+    </div>
+    <div class="card pad rise" style="animation-delay:.08s"><div class="metric"><span data-count="38">0</span> days<small>Predicted time-to-fill</small></div><div class="tag t-amber" style="margin-top:8px">3 days above team avg</div></div>
+    <div class="card pad"><div class="metric">Medium<small>Hiring difficulty</small></div><div class="tag t-amber" style="margin-top:8px">Niche skill: Go + Kafka</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card pad">
+      <div class="sec-title">Skills extracted from JD</div>
+      <div class="sub" style="margin:0 0 10px">Learned from 6 previous hires on this team + HM preferences.</div>
+      <p style="font-weight:700;margin:0 0 6px;font-size:13px">Mandatory</p>
+      <div class="pill-row" style="margin-bottom:12px">
+        <span class="chip">Go</span><span class="chip">Distributed systems</span><span class="chip">Kafka</span><span class="chip">PostgreSQL</span><span class="chip">5+ yrs backend</span>
+      </div>
+      <p style="font-weight:700;margin:0 0 6px;font-size:13px">Preferred</p>
+      <div class="pill-row">
+        <span class="tag t-grey">Kubernetes</span><span class="tag t-grey">gRPC</span><span class="tag t-grey">Fintech domain</span><span class="tag t-grey">Team lead exp.</span>
+      </div>
+    </div>
+    <div class="card pad">
+      <div class="sec-title">AI Hiring Plan</div>
+      <ul class="list-check">
+        <li><span class="ck">✓</span> Lead with in-network talent — 41 relevant profiles found</li>
+        <li><span class="ck">✓</span> Prioritize silver-medalists from Req #ENG-3980</li>
+        <li><span class="ck">✓</span> Activate referrals from current backend team</li>
+        <li><span class="ck">✓</span> Hold external sourcing unless coverage drops below 3×</li>
+      </ul>
+      <div class="ai-note" style="margin-top:14px">
+        <span class="ai-badge">STRATEGY</span>
+        <div><b>Recommended sourcing:</b> Internal-first, 2-week window, then selective external expansion in Austin & remote-US.</div>
+      </div>
+    </div>
+  </div>`;
+
+/* Step 2 — Build the Talent Plan */
+S.s2 = ()=>`
+  <div class="h1">Build the Talent Plan</div>
+  <p class="sub">Agent assembled candidates across 5 pools and prioritized an execution plan.</p>
+  <div class="grid g4" style="margin-bottom:18px">
+    ${[['A · High Confidence','9','Top matches, warm & prior applicants','t-green'],
+       ['B · Refresh Potential','24','Silver medalists · stale profiles','t-blue'],
+       ['C · Internal Mobility','7','Ready-for-growth · Career Navigator','t-purple'],
+       ['D · Internal Champions','16','Networks · alumni · referrers','t-amber'],
+       ].map(c=>`<div class="card pad"><span class="tag ${c[3]}">${c[0]}</span><div class="metric" style="margin-top:10px"><span data-count="${c[1]}">0</span><small>${c[2]}</small></div></div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="pad" style="display:flex;align-items:center">
+      <div><div style="font-weight:800">Prioritized execution plan</div><div class="muted">Ranked by fit × likelihood-to-respond × effort</div></div>
+      <span class="spacer"></span>
+      <span class="tag t-grey">E · External expansion — on standby</span>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>Candidate / Segment</th><th>Pool</th><th>Fit</th><th>Signal</th><th>Planned action</th></tr></thead>
+      <tbody>
+        ${[['1','Marcus Lee','High Confidence','96%','Warm — met at KubeCon','Personalized outreach','t-green'],
+           ['2','Ana Ferreira','High Confidence','94%','Silver medalist ENG-3980','Personalized outreach','t-green'],
+           ['3','Internal: D. Okoro','Internal Mobility','91%','Career Navigator match','Internal opportunity','t-purple'],
+           ['4','24 stale profiles','Refresh','—','Last active 14+ mo','Invite to refresh','t-blue'],
+           ['5','Backend team (6)','Champions','—','Strong networks','Referral campaign','t-amber']
+          ].map(r=>`<tr class="qrow"><td>${r[0]}</td><td><b>${r[1]}</b></td><td><span class="tag ${r[6]}">${r[2]}</span></td><td>${r[3]}</td><td class="muted">${r[4]}</td><td>${r[5]}</td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+/* Step 3 — Recruiter Review (stateful approval workspace) */
+let reviewState = { tracks:[
+  {name:'Contact candidates', sub:'Personalized outreach · drafts ready', count:8, unit:'candidates', status:'pending',
+   detail:"8 high-confidence candidates with drafted, personalized outreach — including Marcus Lee and Ana Ferreira.",
+   sample:"Hi Marcus, great chatting at KubeCon. Priya's team is hiring a Senior Backend Engineer (Go + Kafka) — feels like a strong match for your distributed-systems work. Open to a quick chat?"},
+  {name:'Refresh profiles', sub:'AI conversational update', count:24, unit:'profiles', status:'pending',
+   detail:"24 silver-medalists and stale profiles invited to refresh skills, preferences and availability, then re-ranked.",
+   sample:"Hi — it's been a while! Got 2 minutes to update your profile so we can match you to the right roles as they open?"},
+  {name:'Activate referral champions', sub:'Referral campaign · links generated', count:16, unit:'champions', status:'pending',
+   detail:"16 employees with strong networks; unique referral links generated and tracked.",
+   sample:"Know a brilliant backend engineer? Share your personal referral link — the agent handles screening and scheduling from there."},
+  {name:'Notify internal candidates', sub:'Internal opportunity', count:9, unit:'internal', status:'pending',
+   detail:"9 internal candidates matched via Career Navigator; a tailored role summary is drafted for each.",
+   sample:"A new Senior Backend Engineer role lines up closely with your growth path. Want to hear more about it?"}
+], lastReply:'' };
+function rvQuick(t){ const el=document.getElementById('cmdinput'); if(el) el.value=t; rvCommand(t); }
+function rvCommand(text){
+  text=(text||'').trim(); if(!text) return;
+  const q=text.toLowerCase();
+  const T=reviewState.tracks;
+  T.forEach(t=>{ t.changed=false; });
+  const find=k=>T.find(t=>t.name.toLowerCase().includes(k));
+  const toTop=t=>{ if(!t) return; const i=T.indexOf(t); if(i>0){ T.splice(i,1); T.unshift(t); } t.changed=true; };
+  const note=(t,n)=>{ if(t){ t.note=n; t.changed=true; } };
+  const msgs=[];
+  // 1) prioritize internal
+  if(/internal|mobilit/.test(q) && /(priorit|first|top|focus|lead)/.test(q)){
+    const t=find('internal'); toTop(t); note(t,'↑ prioritized'); t.status='approved';
+    msgs.push("Moved <b>internal candidates</b> to the top and pre-approved that track — internal mobility usually fills fastest, so this should cut time-to-fill.");
+  }
+  // 2) hold external / outreach
+  if(/(hold|pause|stop|skip|freeze)/.test(q) && /(external|outreach|cold|contact|candidate)/.test(q)){
+    const t=find('contact'); if(t){ t.status='held'; note(t,'⏸ held'); }
+    msgs.push("Put <b>candidate outreach on hold</b>. I'll lean on internal, referrals and refreshed profiles first, and flag you if coverage drops.");
+  }
+  // 3) more referrals
+  if(/referr|champion/.test(q) && /(more|add|increase|boost|expand|double)/.test(q)){
+    const t=find('referral'); if(t){ t.count+= /double/.test(q)?t.count:8; note(t,'↑ increased'); }
+    msgs.push(`Increased <b>referral champions</b> to ${find('referral').count}. Referrals convert ~2× faster here, so it's a strong lever.`);
+  }
+  // 4) focus silver medalists / refresh
+  if(/silver|medalist|refresh|re-?engage/.test(q) && /(focus|priorit|first|more|top|lead)/.test(q)){
+    const t=find('refresh'); toTop(t); t.count+=6; note(t,'↑ prioritized · +6');
+    msgs.push("Prioritized <b>silver-medalists & profile refresh</b> and widened it by 6 — these are pre-vetted, so expect faster qualified replies.");
+  }
+  // 5) reduce volume
+  if(/(reduce|fewer|less|lower|smaller|trim|tighten)/.test(q) && /(volume|outreach|candidates|all|number|plan|reach)/.test(q)){
+    T.forEach(t=>{ const b=t.count; t.count=Math.round(t.count*0.6); if(t.count!==b){ t.changed=true; note(t,'↓ trimmed'); } });
+    msgs.push("Trimmed each track ~40% for a <b>tighter, higher-precision plan</b> — fewer people, higher intent.");
+  }
+  // 6) broaden / diversity of slate
+  if(/divers|underrepresented|broaden|wider|balanced|bigger slate|more reach/.test(q)){
+    const r=find('refresh'), c=find('contact');
+    if(r){ r.count+=8; note(r,'↑ widened'); } if(c){ c.count+=4; note(c,'↑ widened'); }
+    msgs.push("Widened top-of-funnel sourcing (refresh +8, outreach +4) to build a <b>broader, more balanced slate</b> before screening.");
+  }
+  // 7) generic increase outreach (only if nothing else matched)
+  if(msgs.length===0 && /(more|increase|expand|widen|scale)/.test(q) && /(candidate|outreach|reach|pipeline|top|funnel)/.test(q)){
+    const t=find('contact'); if(t){ t.count+=6; note(t,'↑ +6'); }
+    msgs.push(`Widened <b>candidate outreach</b> to ${find('contact').count} to build more top-of-funnel coverage.`);
+  }
+  reviewState.lastReply = msgs.length
+    ? msgs.join(' ')
+    : "I can reprioritize pools, change volume, or hold tracks. Try: “prioritize internal first”, “add more referrals”, “hold external outreach”, or “reduce volume”.";
+  rvRender();
+}
+function rvRender(){ const el=document.getElementById('reviewroot'); if(el) el.innerHTML=reviewBody(); }
+function rvApprove(i){ reviewState.tracks[i].status='approved'; rvRender(); }
+function rvHold(i){ reviewState.tracks[i].status='held'; rvRender(); }
+function rvApproveAll(){ reviewState.tracks.forEach(t=>{ if(t.status!=='held') t.status='approved'; }); rvRender(); }
+function rvReset(){ reviewState.tracks.forEach(t=>t.status='pending'); rvRender(); }
+function rvStep(i,d){ const t=reviewState.tracks[i]; t.count=Math.max(0,t.count+d); rvRender(); rvReview(i); }
+function rvLaunch(){
+  const el=document.getElementById('reviewroot'); if(!el) return;
+  const n=reviewState.tracks.filter(t=>t.status==='approved').reduce((s,t)=>s+t.count,0);
+  el.innerHTML=`<div class="card pad" style="text-align:center;padding:52px 24px">
+    <div style="font-size:48px">🚀</div>
+    <h2 style="margin:10px 0 4px">Execution launched</h2>
+    <p class="muted">The agent is now running your approved tracks — ${n} people queued.</p>
+    <button class="btn" style="margin-top:16px" onclick="go('s4')">See execution →</button></div>`;
+}
+function rvReview(i){
+  const t=reviewState.tracks[i];
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-head"><div class="mic t-purple">✎</div>
+      <div><h2>${t.name}</h2><div class="muted">${t.sub}</div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <span class="src" style="display:inline-block;margin-bottom:14px">STEP 3 · REVIEW TRACK</span>
+      <h4>What the agent will do</h4>
+      <p style="font-size:13px;margin:0 0 4px;line-height:1.5">${t.detail}</p>
+      <h4>Volume — adjust before approving</h4>
+      <div class="stepper"><button onclick="rvStep(${i},-1)">−</button><b>${t.count}</b><span>${t.unit}</span><button onclick="rvStep(${i},1)">+</button></div>
+      <h4 style="margin-top:18px">Sample message</h4>
+      <div class="sample">${t.sample}</div>
+    </div>
+    <div class="modal-foot"><span class="spacer"></span>
+      <button class="btn ghost" onclick="rvHold(${i});closeModal()">Hold this track</button>
+      <button class="btn" onclick="rvApprove(${i});closeModal()">Approve track</button></div>`;
+  document.getElementById('modalback').classList.add('on');
+}
+function reviewBody(){
+  const st=reviewState.tracks;
+  const approved=st.filter(t=>t.status==='approved').length;
+  const held=st.filter(t=>t.status==='held').length;
+  const resolved=approved+held;
+  const totalPeople=st.filter(t=>t.status!=='held').reduce((s,t)=>s+t.count,0);
+  const allResolved=resolved===st.length;
+  return `
+  <div class="cmdbar card pad">
+    <div class="cmdrow">
+      <span class="cmdai">✦</span>
+      <input id="cmdinput" placeholder="Tell the agent how to adjust the plan… e.g. 'prioritize internal candidates and hold external outreach'" onkeydown="if(event.key==='Enter')rvCommand(this.value)">
+      <button class="btn" onclick="rvCommand(document.getElementById('cmdinput').value)">Ask agent</button>
+    </div>
+    <div class="chips">
+      <button onclick="rvQuick('Prioritize internal candidates first')">Prioritize internal first</button>
+      <button onclick="rvQuick('Hold external outreach for now')">Hold external outreach</button>
+      <button onclick="rvQuick('Add more referral champions')">More referrals</button>
+      <button onclick="rvQuick('Focus on silver medalists')">Focus on silver medalists</button>
+      <button onclick="rvQuick('Reduce overall volume')">Reduce volume</button>
+    </div>
+    ${reviewState.lastReply?`<div class="agent-reply"><span class="ab">AGENT</span><div>${reviewState.lastReply}</div></div>`:''}
+  </div>
+  <div class="grid g2">
+    <div>
+      <div class="card pad" style="margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div><div style="font-weight:800">Plan approval</div><div class="muted">${approved} of ${st.length} tracks approved${held?` · ${held} on hold`:''}</div></div>
+          <span class="spacer"></span>
+          <button class="btn ghost sm" onclick="rvReset()">Reset</button>
+          <button class="btn sm" onclick="rvApproveAll()">✓ Approve all</button>
+        </div>
+        <div class="bar" style="margin-top:12px"><i style="width:${resolved/st.length*100}%"></i></div>
+      </div>
+      ${st.map((t,i)=>`
+        <div class="rv-track ${t.status} ${t.changed?'flash':''}">
+          <div class="rv-ic">${t.status==='approved'?'✓':t.status==='held'?'❚❚':'●'}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:700;font-size:13.5px">${t.name} <span class="muted">· ${t.count} ${t.unit}</span>${t.note?`<span class="note-chip">${t.note}</span>`:''}</div>
+            <div class="muted">${t.sub}</div>
+          </div>
+          <div style="display:flex;gap:7px;align-items:center">
+            <button class="btn ghost sm" onclick="rvReview(${i})">Review</button>
+            ${t.status==='approved'
+              ? `<span class="tag t-green">Approved ✓</span>`
+              : t.status==='held'
+                ? `<span class="tag t-grey">On hold</span><button class="btn sm" onclick="rvApprove(${i})">Approve</button>`
+                : `<button class="btn ghost sm" onclick="rvHold(${i})">Hold</button><button class="btn sm" onclick="rvApprove(${i})">Approve</button>`}
+          </div>
+        </div>`).join('')}
+    </div>
+    <div>
+      <div class="card pad">
+        <div class="sec-title">Live plan summary</div>
+        <div class="metric">${totalPeople}<small>people the agent will engage</small></div>
+        <div class="kv" style="margin-top:12px"><span>Approved tracks</span><b>${approved}/${st.length}</b></div>
+        <div class="kv"><span>On hold</span><b>${held}</b></div>
+        <div class="ai-note" style="margin-top:14px"><span class="ai-badge">NOTE</span><div>Nothing sends until you approve. Hold anything you're unsure about — approve it later.</div></div>
+      </div>
+      ${allResolved && approved>0 ? `
+        <div class="launch card pad">
+          <div style="font-weight:800;font-size:15px;margin-bottom:3px">Ready to launch 🚀</div>
+          <div class="muted" style="margin-bottom:12px">${approved} track${approved>1?'s':''} approved · ${totalPeople} people queued.</div>
+          <button class="btn" onclick="rvLaunch()">Launch execution →</button>
+        </div>` : ''}
+    </div>
+  </div>`;
+}
+S.s3 = ()=>`
+  <div class="h1">Recruiter Review</div>
+  <p class="sub">One consolidated AI plan for Req #ENG-4471. Approve all, hold what you're unsure about, or open each track to review.</p>
+  <div id="reviewroot">${reviewBody()}</div>`;
+
+/* Step 4 — Execution */
+S.s4 = ()=>`
+  <div class="h1">Execution</div>
+  <p class="sub">Approved. The agent is running four tracks in parallel.</p>
+  <div class="grid g2">
+    ${[
+      ['High Confidence Candidates','t-green',8,'in outreach',[
+        'Sent personalized outreach to 8 candidates',
+        'Answering candidate questions in-thread',
+        'Gauging interest & intent',
+        '5 AI screenings scheduled']],
+      ['Refresh Candidates','t-blue',24,'invited',[
+        'Invited to update profile',
+        'AI conversational interview running',
+        'Refreshing skills, preferences & availability',
+        'Re-ranking against the role']],
+      ['Internal Champions','t-amber',16,'activated',[
+        'Generated referral messages',
+        'Created unique referral links',
+        'Sent campaign to backend + alumni',
+        'Tracking referrals live']],
+      ['Internal Candidates','t-purple',9,'notified',[
+        'Sent internal opportunity',
+        'Explaining role & growth path',
+        'Answering questions',
+        'Capturing interest']]
+    ].map(t=>`
+      <div class="card pad">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <b>${t[0]}</b><span class="spacer"></span><span class="tag ${t[1]}"><span data-count="${t[2]}">0</span> ${t[3]}</span>
+        </div>
+        <ul class="list-check">${t[4].map(x=>`<li><span class="ck">✓</span>${x}</li>`).join('')}</ul>
+      </div>`).join('')}
+  </div>
+  <div class="card pad" style="margin-top:16px">
+    <div style="display:flex;align-items:center;gap:8px"><span class="pulse"></span><b>Live activity</b><span class="muted" style="margin-left:6px">streaming from the agent</span></div>
+    <ul class="feed" id="execfeed" style="margin-top:12px"></ul>
+  </div>`;
+
+/* Step 5 — Qualify & Score */
+S.s5 = ()=>`
+  <div class="h1">Qualify & Score</div>
+  <p class="sub">The agent evaluates each response and assigns a status.</p>
+  <div class="grid g4" style="margin-bottom:18px">
+    ${[['Qualified','11','t-green'],['Needs Recruiter','4','t-amber'],['Not Interested','6','t-red'],['Hold / Archive','9','t-grey']]
+      .map(c=>`<div class="card pad"><div class="metric"><span data-count="${c[1]}">0</span><small>${c[0]}</small></div><span class="tag ${c[2]}" style="margin-top:8px">${c[0]}</span></div>`).join('')}
+  </div>
+  <div class="card">
+    <div class="pad"><b>Response evaluation</b> <span class="muted">— interested? qualified? needs recruiter? needs AI screening? needs more info?</span></div>
+    <table>
+      <thead><tr><th>Candidate</th><th>Interested</th><th>Qualified</th><th>Screen fit</th><th>Agent decision</th><th>Status</th></tr></thead>
+      <tbody>
+        ${[['Marcus Lee','Yes','Yes','92%','Advance to AI screening','Qualified','t-green'],
+           ['Ana Ferreira','Yes','Yes','88%','Advance to recruiter','Needs Recruiter','t-amber'],
+           ['J. Whitmore','Yes','Partial','—','Ask 2 clarifying questions','Hold','t-grey'],
+           ['S. Patel','No','—','—','Thank & keep warm','Not Interested','t-red'],
+           ['D. Okoro (internal)','Yes','Yes','90%','Notify HM','Qualified','t-green']
+          ].map(r=>`<tr><td class="who"><span class="ava">${r[0].split(' ').map(w=>w[0]).slice(0,2).join('')}</span><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td class="muted">${r[4]}</td><td><span class="qstatus"><span class="tag ${r[6]}">${r[5]}</span></span></td></tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+
+/* Step 6 — Orchestrate the Pipeline */
+S.s6 = ()=>`
+  <div class="h1">Orchestrate &amp; Schedule</div>
+  <p class="sub">The sourcing agent hands off to the scheduling agent, which drives every interview forward — up to the panel. Offer &amp; close stay human-led.</p>
+  <div class="grid g2">
+    <div class="card pad">
+      <div class="sec-title">Marcus Lee — interview progression</div>
+      <ul class="timeline">
+        <li class="done"><span class="dot"></span><h4>AI Interview completed</h4><p>Score 92 · strengths: Kafka, system design</p></li>
+        <li class="done"><span class="dot"></span><h4>Advanced to Recruiter</h4><p>Notes shared · screening summary attached</p></li>
+        <li class="now"><span class="dot"></span><h4>Advanced to Hiring Manager</h4><p>Priya reviewing · panel next</p></li>
+        <li><span class="dot"></span><h4>Schedule Panel</h4><p>4 interviewers · agent coordinating</p></li>
+        <li><span class="dot"></span><h4>Collect panel feedback → hand to hiring team</h4><p>Agent's scope ends here; offer &amp; close are human-led</p></li>
+      </ul>
+    </div>
+    <div class="card pad">
+      <div class="sec-title">Scheduling agent</div>
+      <ul class="list-check">
+        <li><span class="ck">✓</span> Calendar coordination across interviewers</li>
+        <li><span class="ck">✓</span> Panel scheduling — 4 slots proposed</li>
+        <li><span class="ck">✓</span> Automatic rescheduling on conflicts</li>
+        <li><span class="ck">✓</span> Reminders to candidate & panel</li>
+        <li><span class="ck">✓</span> Time-zone handling (PST ↔ IST)</li>
+      </ul>
+      <div class="ai-note" style="margin-top:14px"><span class="ai-badge">NEXT BEST ACTION</span><div>Panel for Marcus proposed <b>Thu 10:00 PST</b> — 3 of 4 confirmed, nudging the 4th.</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="qhead"><span class="sec-title">Reaching everyone on the right channel</span><span class="spacer"></span><span class="tag t-purple">AUTO · agent</span></div>
+    <div class="pad">
+      <div class="grid g2">
+        <div>
+          <h4 class="rcpt-h">External · candidates</h4>
+          ${[
+            ['✉','Email','Marcus Lee — interview invite','Opened','t-green'],
+            ['💬','SMS','Marcus — reminder & directions','Delivered','t-blue'],
+            ['🟢','WhatsApp','Ana Ferreira — slot options','Replied · "Thu works"','t-green'],
+            ['in','LinkedIn InMail','Passive candidate — re-engage','Sent','t-grey']
+          ].map(c=>`<div class="chrow"><div class="chico">${c[0]}</div><div class="chbody"><div class="cht">${c[1]}</div><div class="chs">${c[2]}</div></div><span class="chstatus"><span class="tag ${c[4]}">${c[3]}</span></span></div>`).join('')}
+        </div>
+        <div>
+          <h4 class="rcpt-h">Internal · panel & stakeholders</h4>
+          ${[
+            ['💼','Slack','#interview-panel — availability poll','3 of 4 responded','t-amber'],
+            ['📅','Calendar','4 interviewers — invites','3 accepted · 1 pending','t-amber'],
+            ['👥','Teams','Priya Nair (HM) — heads-up','Notified','t-green'],
+            ['🔔','Reminders','Candidate + panel','Queued · 24h before','t-grey']
+          ].map(c=>`<div class="chrow"><div class="chico">${c[0]}</div><div class="chbody"><div class="cht">${c[1]}</div><div class="chs">${c[2]}</div></div><span class="chstatus"><span class="tag ${c[4]}">${c[3]}</span></span></div>`).join('')}
+        </div>
+      </div>
+      <div class="ai-note" style="margin-top:14px"><span class="ai-badge">CHANNEL CHOICE</span><div>The agent picks each person's <b>preferred channel</b> automatically — candidates by their opt-in, interviewers on Slack/Teams + calendar — and falls back to another channel if there's no response.</div></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="qhead"><span class="sec-title">Live coordination · finding a time that works for everyone</span>
+      <span class="spacer"></span><span class="tag t-purple">AUTO · agent</span></div>
+    <div class="pad">
+      <div class="grid g2">
+        <div>
+          <div class="chat-hd wa"><span class="ch-ic">✆</span> WhatsApp · Marcus Lee (candidate)</div>
+          <div class="chat">
+            <div class="bub bub-agent" data-seq="1"><span class="who">Agent · on behalf of Robin</span>Hi Marcus — time to lock your final panel. Does <b>Thu 10:00 AM PST</b> work, or would <b>Fri 2:00 PM</b> be better?<span class="bt">9:02 AM ✓✓</span></div>
+            <div class="bub bub-them" data-seq="2"><span class="who">Marcus Lee</span>Thursday's better for me 👍<span class="bt">9:07 AM</span></div>
+            <div class="bub bub-agent" data-seq="7"><span class="who">Agent</span>Perfect — you're booked for <b>Thu 10:00 AM PST</b>. Calendar invite + prep guide on the way.<span class="bt">9:41 AM ✓✓</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="chat-hd sl"><span class="ch-ic">#</span> Slack · #interview-panel (hiring team)</div>
+          <div class="chat">
+            <div class="bub bub-agent" data-seq="3"><span class="who">Agent</span>Proposing <b>Thu 10:00 AM PST</b> for Marcus Lee's panel — system design + HM round with Priya. Can everyone make it?<span class="bt">9:10 AM</span></div>
+            <div class="bub bub-them" data-seq="4"><span class="who">Priya Nair · HM</span>Works for me ✓<span class="bt">9:14 AM</span></div>
+            <div class="bub bub-agent" data-seq="5"><span class="who">Agent</span>3 of 4 confirmed — nudging Dana to close it out.<span class="bt">9:26 AM</span></div>
+            <div class="bub bub-them" data-seq="6"><span class="who">Dana Cole</span>In ✓ (moved my 10:30)<span class="bt">9:39 AM</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="sched-lock">
+        <span class="lk">📅</span>
+        <div><b>Locked: Thursday, 10:00 AM PST</b><div class="muted">Calendar invites sent to Marcus + 4 panelists · time zones reconciled (PST ↔ IST) · reminders queued 24h before · prep guide shared with candidate.</div></div>
+      </div>
+    </div>
+  </div>`;
+
+/* Step 7 — Human Escalation */
+S.s7 = ()=>`
+  <div class="h1">Human Escalation</div>
+  <p class="sub">The agent knows when automation stops — and hands these to you.</p>
+  <div class="grid" style="gap:12px">
+    ${[
+      ['☎','Ana Ferreira has competing offers','Deadline in 48h. Recommend a call to discuss timeline.','t-red'],
+      ['💬','Marcus Lee requested a salary discussion','Wants to talk comp before panel.','t-amber'],
+      ['⏳','J. Whitmore — no response after 3 attempts','Last touch 6 days ago.','t-amber'],
+      ['★','Executive-level candidate in pipeline','VP Eng prospect — white-glove handling required.','t-purple'],
+      ['👤','Hiring manager requested recruiter involvement','Priya asked you to join the debrief.','t-blue']
+    ].map(f=>`
+      <div class="flag">
+        <div class="ic ${f[3]}">${f[0]}</div>
+        <div style="flex:1"><b>${f[1]}</b><div class="muted">${f[2]}</div></div>
+        <button class="btn ghost sm">View</button>
+        <button class="btn sm">Take over</button>
+      </div>`).join('')}
+  </div>
+  <div class="ai-note" style="margin-top:16px"><span class="ai-badge">RECOMMENDATION</span><div><b>"I recommend calling this candidate."</b> Instead of continuing automation on Ana Ferreira, the agent routes her to you with full context and a suggested talking-point script.</div></div>`;
+
+/* Step 8 — Continuous Optimization */
+S.s8 = ()=>`
+  <div class="h1">Continuous Optimization</div>
+  <p class="sub">The agent monitors pipeline health and recommends corrective actions.</p>
+  <div class="grid g4" style="margin-bottom:18px">
+    ${[['Response rate','34%','+ healthy','t-green'],['Interview completion','71%','steady','t-green'],['HM feedback delay','3.2 days','slowing','t-amber'],['Candidate drop-off','18%','watch','t-amber']]
+      .map(c=>`<div class="card pad"><div class="metric">${c[1]}<small>${c[0]}</small></div><span class="tag ${c[3]}" style="margin-top:8px">${c[2]}</span></div>`).join('')}
+  </div>
+  <div class="grid g2">
+    <div class="card pad">
+      <div class="sec-title">Signals being tracked</div>
+      ${[['Pipeline health',72],['Response rates',68],['Interview completion',71],['Referral success',54],['Internal mobility',61],['Offer acceptance',80]]
+        .map(m=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>${m[0]}</span><b>${m[1]}</b></div><div class="bar"><i style="width:${m[1]}%"></i></div></div>`).join('')}
+    </div>
+    <div class="card pad">
+      <div class="sec-title">Auto-recommended actions <span class="tag t-amber" style="margin-left:6px">Pipeline weakening</span></div>
+      <ul class="list-check">
+        <li><span class="ck">→</span> Expand search to remote-US + Austin</li>
+        <li><span class="ck">→</span> Launch a second referral campaign</li>
+        <li><span class="ck">→</span> Refresh 30 more silver-medalist profiles</li>
+        <li><span class="ck">→</span> Escalate HM feedback delay to recruiter</li>
+        <li><span class="ck">→</span> Shift sourcing strategy: internal → hybrid</li>
+      </ul>
+      <button class="btn" style="margin-top:14px">Apply recommendations</button>
+    </div>
+  </div>`;
+
+/* Step 9 — Role Filled · share the wrap-up */
+let summaryState={ sent:false, recipients:[
+  {ini:'PN', name:'Priya Nair', role:'Hiring Manager', ch:'Email', on:true},
+  {ini:'DC', name:'Dana Cole', role:'VP Talent Acquisition', ch:'Slack', on:true},
+  {ini:'TO', name:'TA Ops & Finance', role:'Cost & efficiency', ch:'Email', on:true},
+  {ini:'IP', name:'Interview Panel', role:'4 interviewers', ch:'Slack', on:true},
+  {ini:'JB', name:'Jordan Blake', role:'HR Business Partner', ch:'Email', on:false}
+]};
+function sumRender(){ const el=document.getElementById('sharewrap'); if(el) el.innerHTML=sumBody(); }
+function autoSendSummary(){
+  const rows=summaryState.recipients;
+  summaryState.sent=false; rows.forEach(r=>r.delivered=false); sumRender();
+  rows.forEach((r,i)=> later(()=>{ r.delivered=true; sumRender(); }, 900 + i*550));
+  later(()=>{ summaryState.sent=true; sumRender(); }, 900 + rows.length*550 + 400);
+}
+function sumPreview(){
+  document.getElementById('modal').innerHTML=`
+    <div class="modal-head"><div class="mic t-purple">✉</div>
+      <div><h2>Efficiency summary — what the agent sent</h2><div class="muted">Agent-drafted & auto-sent · Senior Backend Engineer #ENG-4471</div></div>
+      <button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;line-height:1.6;margin:0 0 14px">Hi team — the Senior Backend Engineer role is filled. <b>Marcus Lee</b> accepted and starts Aug 25. Here's the wrap-up:</p>
+      <h4>Efficiency</h4>
+      <div class="summary-card" style="margin-bottom:14px">
+        <div class="kv"><span>Time-to-fill</span><b>31 days · 7 under target</b></div>
+        <div class="kv"><span>Winning source</span><b>Referral — A. Rao</b></div>
+        <div class="kv"><span>Referral conversion</span><b>41% of qualified pool</b></div>
+      </div>
+      <h4>Value from AI screening &amp; automation</h4>
+      <div class="summary-card" style="margin-bottom:14px">
+        <div class="kv"><span>Candidates AI-screened</span><b>46 · vs. ~12 manual capacity</b></div>
+        <div class="kv"><span>Screening accuracy</span><b>94% vs. recruiter scores</b></div>
+        <div class="kv"><span>Recruiter time saved</span><b>~38 hours (~$3,400 loaded cost)</b></div>
+        <div class="kv"><span>Consistency &amp; fairness</span><b>Every candidate scored identically — no reviewer fatigue</b></div>
+      </div>
+      <h4>Candidate experience</h4>
+      <div class="summary-card" style="margin-bottom:14px">
+        <div class="kv"><span>Candidate satisfaction (CSAT)</span><b>4.7 / 5 · 38 responses</b></div>
+        <div class="kv"><span>Candidate NPS</span><b>+68</b></div>
+        <div class="kv"><span>Avg. response time to candidates</span><b>3 min (agent) vs. 1.4 days benchmark</b></div>
+        <div class="kv"><span>Kept-informed rate</span><b>100% · no candidate left waiting</b></div>
+        <div class="kv"><span>Interview experience rating</span><b>4.8 / 5</b></div>
+      </div>
+      <h4>Recommendations for the next hire</h4>
+      <ul class="tp">
+        <li>💡 Lead with referrals — they converted ~2× faster than external outreach.</li>
+        <li>💡 Pre-book interview panels at kickoff — HM feedback delay cost ~3 days, the main bottleneck.</li>
+        <li>💡 Start internal-first for Go + Kafka roles — the model now rates them internal-fillable; raise the confidence baseline.</li>
+        <li>💡 Refresh silver-medalist profiles up front — that surfaced 3 qualified candidates this round.</li>
+      </ul>
+      <p style="font-size:12px;color:var(--slate);margin:14px 0 0">Sent on Robin's behalf by the Eightfold agent as the role closed.</p>
+    </div>
+    <div class="modal-foot"><span class="spacer"></span><button class="btn" onclick="closeModal()">Close</button></div>`;
+  document.getElementById('modalback').classList.add('on');
+}
+function sumBody(){
+  const rows=summaryState.recipients;
+  const delivered=rows.filter(r=>r.delivered).length;
+  if(summaryState.sent){
+    return `<div class="card pad" style="border:1px solid #BFE8CF;background:linear-gradient(180deg,#F2FBF6,#fff);animation:rise .35s ease">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="qic t-green" style="font-size:18px">📤</div>
+        <div style="flex:1"><div style="font-weight:800">Efficiency summary sent automatically to ${rows.length} stakeholders</div>
+          <div class="muted">The agent sent it as the role closed · ${[...new Set(rows.map(r=>r.ch))].join(' + ')} · copy saved to the req record — no action needed from you.</div></div>
+        <button class="btn ghost sm" onclick="sumPreview()">View email</button>
+      </div>
+      <div class="pill-row" style="margin-top:12px">${rows.map(r=>`<span class="chip">${r.name} ✓</span>`).join('')}</div>
+    </div>`;
+  }
+  return `<div class="card">
+    <div class="qhead"><span class="sec-title">Closing the loop · efficiency summary</span><span class="spacer"></span><span class="tag t-purple">AUTO · agent</span></div>
+    <div class="pad">
+      <div class="working" style="margin-bottom:14px"><span class="work-orb"></span><div class="work-txt"><b>Agent sending</b> · delivering the wrap-up to ${rows.length} stakeholders…</div><span class="work-dots"><i></i><i></i><i></i></span></div>
+      <div class="grid g2">
+        <div>
+          <h4 class="rcpt-h">Recipients — ${delivered}/${rows.length} delivered</h4>
+          ${rows.map(r=>`
+            <div class="rcpt ${r.delivered?'on':''}">
+              <span class="ava">${r.ini}</span>
+              <span style="flex:1;min-width:0"><b style="font-size:13px">${r.name}</b><div class="muted">${r.role}</div></span>
+              <span class="tag ${r.ch==='Slack'?'t-blue':'t-grey'}">${r.ch}</span>
+              <span class="tag ${r.delivered?'t-green':'t-grey'}" style="min-width:82px;text-align:center">${r.delivered?'✓ Delivered':'Queued…'}</span>
+            </div>`).join('')}
+        </div>
+        <div>
+          <h4 class="rcpt-h">What the agent is sending</h4>
+          <div class="summary-card">
+            <div style="font-weight:800;margin-bottom:8px">Hiring wrap-up · Senior Backend Engineer</div>
+            <div class="kv"><span>Time-to-fill</span><b>31 days · 7 under target</b></div>
+            <div class="kv"><span>Candidates AI-screened</span><b>46</b></div>
+            <div class="kv"><span>AI screening accuracy</span><b>94%</b></div>
+            <div class="kv"><span>Recruiter time saved</span><b>~38 hrs · ~$3,400</b></div>
+            <div class="kv"><span>Candidate experience</span><b>CSAT 4.7/5 · NPS +68</b></div>
+            <div class="kv"><span>Winning source</span><b>Referral (A. Rao)</b></div>
+            <div class="kv"><span>+ Next-hire tips</span><b>4 recommendations</b></div>
+          </div>
+          <button class="btn ghost sm" style="margin-top:12px" onclick="sumPreview()">Preview email</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+S.s9 = ()=>`
+  <div class="h1">Role Filled 🎉</div>
+  <p class="sub">Senior Backend Engineer · Req #ENG-4471 · Marcus Lee accepted · Start date Aug 25, 2026</p>
+  <div class="grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:18px">
+    ${[['31 days','Time-to-fill','7 days under prediction','t-green'],['~38 hrs','Recruiter time saved','≈ $3,400 loaded','t-purple'],['94%','AI screening accuracy','46 candidates screened','t-blue'],['4.7/5','Candidate experience','CSAT · NPS +68','t-amber'],['Referral','Winning source','Champion: A. Rao','t-green']]
+      .map(c=>`<div class="card pad"><div class="metric">${c[0]}<small>${c[1]}</small></div><span class="tag ${c[3]}" style="margin-top:8px">${c[2]}</span></div>`).join('')}
+  </div>
+  <div class="grid g2">
+    <div class="card pad">
+      <div class="sec-title">Source effectiveness</div>
+      ${[['Referral champions',48],['High-confidence outreach',27],['Internal mobility',15],['Refreshed profiles',10]]
+        .map(m=>`<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>${m[0]}</span><b>${m[1]}%</b></div><div class="bar"><i style="width:${m[1]}%"></i></div></div>`).join('')}
+      <div class="kv" style="margin-top:6px"><span>Internal mobility contribution</span><b>1 finalist advanced internally</b></div>
+    </div>
+    <div class="card pad">
+      <div class="sec-title">Lessons learned & recommendations</div>
+      <ul class="list-check">
+        <li><span class="ck">✓</span> Referrals converted 2× faster than external — lead with them next time</li>
+        <li><span class="ck">✓</span> Profile refresh surfaced 3 qualified silver-medalists</li>
+        <li><span class="ck">✓</span> HM feedback delay was the main bottleneck — pre-book panels earlier</li>
+        <li><span class="ck">✓</span> Model updated: Go+Kafka roles are internal-fillable — raise confidence baseline</li>
+      </ul>
+      <div class="ai-note" style="margin-top:14px"><span class="ai-badge">FEEDBACK LOOP</span><div>These learnings feed back into Step 1 to improve the next role's hiring plan.</div></div>
+    </div>
+  </div>
+  <div id="sharewrap" style="margin-top:16px">${sumBody()}</div>`;
+
+/* ---------- Navigation ---------- */
+function renderNav(){
+  const home = `<li data-key="home" onclick="go('home')"><span class="num">⌂</span><span>Home</span></li>`;
+  const mc = `<li data-key="mc" onclick="go('mc')"><span class="num">◎</span><span>Mission Control</span></li>`;
+  document.getElementById('nav').innerHTML = home + mc + STEPS.map(s=>
+    `<li data-key="${s.key}" onclick="go('${s.key}')">
+       <span class="num">${s.n===0?'⌘':s.n}</span>
+       <span>${s.title}</span>
+     </li>`).join('');
+}
+const SURFACE_URL={home:'app.eightfold.ai',overview:'app.eightfold.ai/flow',mc:'app.eightfold.ai/mission-control',
+  s3:'app.eightfold.ai/req/ENG-4471/review',s7:'app.eightfold.ai/req/ENG-4471/needs-attention'};
+function surfaceType(key){ return LAYER[key]==='agent' ? 'backstage' : 'browser'; }
+function chromeBar(key){
+  if(surfaceType(key)==='backstage')
+    return `<div class="chrome backstage"><span class="cg">⚙</span><span class="ct">Agent — working in the background · the recruiter never sees this screen</span><span class="chrome-tag">not a user view</span></div>`;
+  const url=SURFACE_URL[key]||'app.eightfold.ai';
+  return `<div class="chrome browser"><span class="dots"><i></i><i></i><i></i></span><span class="urlbar">🔒 ${url}</span><span class="chrome-tag">👤 Recruiter · in browser</span></div>`;
+}
+function go(key){
+  const step = STEPS.find(s=>s.key===key);
+  const c = document.getElementById('content');
+  let inner;
+  if(key==='home'){ inner = landing(); }
+  else if(key==='mc'){ inner = S.mc(); }
+  else if(key==='overview'){ inner = overview(); }
+  else { inner = navBar(step) + `<div class="screen on">${S[key]()}</div>`; }
+  if(presenting){
+    c.className='content framed'; c.innerHTML = chromeBar(key) + `<div class="framebody">${inner}</div>`;
+  } else {
+    c.className='content'; c.innerHTML = inner;
+  }
+  document.querySelectorAll('#nav li').forEach(li=>li.classList.toggle('active', li.dataset.key===key));
+  document.getElementById('crumb').innerHTML =
+      key==='home' ? '<b>Welcome</b>'
+    : key==='mc' ? '<b>Mission Control</b>'
+    : key==='overview' ? 'Home / <b>Flow overview</b>'
+    : `Home / <b>${step.n}. ${step.title}</b>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+  currentKey = key;
+  updateBadge(key);
+  requestAnimationFrame(()=>{ autoReveal(); runFX(key); applyView(key); });
+  if(key==='mc' && !tourSeen && !presenting) setTimeout(startTour, 800);
+}
+function navBar(step){
+  const prev = step.n>1 ? STEPS[step.n-1].key : null;
+  const next = step.n<9 ? STEPS[step.n+1].key : null;
+  return `<div class="backbar">
+     <button class="backbtn" onclick="go('overview')">← All steps</button>
+     <span class="muted">Step ${step.n} of 9</span>
+     <div class="stepnav">
+       <button ${prev?`onclick="go('${prev}')"`:'disabled'}>‹ Prev</button>
+       <button ${next?`onclick="go('${next}')"`:'disabled'}>Next ›</button>
+     </div>
+   </div>`;
+}
+function approveAll(btn){ btn.textContent='✓ Approved — executing'; btn.style.background='var(--green)'; }
+
+/* ---------- Layer: who is acting on each screen ---------- */
+const LAYER = {
+  mc:'recruiter', overview:'system',
+  s1:'agent', s2:'agent', s3:'recruiter', s4:'agent', s5:'agent',
+  s6:'agent', s7:'recruiter', s8:'agent', s9:'agent'
+};
+const LAYER_TXT = {
+  agent:['lb-agent','⚙ AGENT · working in the background'],
+  recruiter:['lb-rec','👤 RECRUITER · what Robin sees'],
+  system:['lb-sys','◇ SYSTEM · the full loop']
+};
+let currentKey = 'mc', viewMode = 'agent';
+function updateBadge(key){
+  const b = document.getElementById('layerbadge');
+  if(!b) return; // badge removed — surface chrome now conveys agent vs. recruiter
+}
+function setView(mode){
+  viewMode = mode;
+  document.querySelectorAll('[data-v]').forEach(btn=>btn.classList.toggle('on', btn.dataset.v===mode));
+  applyView(currentKey);
+}
+/* In Recruiter view, background-agent screens are veiled — showing Robin doesn't see them */
+function applyView(key){
+  const old = document.querySelector('.veil'); if(old) old.remove();
+  if(viewMode==='recruiter' && LAYER[key]==='agent'){
+    const v=document.createElement('div'); v.className='veil';
+    v.innerHTML=`<div class="veilcard">
+      <div class="vic">⚙️</div>
+      <h3>The agent is handling this in the background</h3>
+      <p>Robin never sees this step. It runs automatically — she only gets the result when it needs her.</p>
+      <span class="mini-tag">Switch to Agent view to see what the agent is doing</span>
+    </div>`;
+    document.getElementById('content').appendChild(v);
+  }
+}
+
+/* ---------- Motion states ---------- */
+function countUp(el){
+  const target = parseFloat(el.dataset.count);
+  const suffix = el.dataset.suffix || '';
+  const dur = 900, t0 = performance.now();
+  function frame(t){
+    const p = Math.min(1,(t-t0)/dur);
+    const val = Math.round(target*(1-Math.pow(1-p,3)));
+    el.textContent = val + suffix;
+    if(p<1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+const WORKING_MSGS = {
+  s1:['Reading the job description…','Learning from 6 past hires…','Estimating hiring difficulty…','Scoring 41 in-network profiles…'],
+  s2:['Scanning 5 talent pools…','Ranking candidates by fit…','Matching internal mobility…','Prioritizing the execution plan…'],
+  s4:['Sending personalized outreach…','Answering candidate questions…','Refreshing 24 profiles…','Tracking referral links…'],
+  s5:['Reading new replies…','Scoring qualification…','Routing to recruiter or AI screen…','Updating candidate status…'],
+  s6:['Coordinating calendars…','Proposing 4 panel slots…','Handling time zones (PST ↔ IST)…','Sending reminders…'],
+  s8:['Monitoring pipeline health…','Watching response rates…','Detecting weak signals…','Preparing recommendations…'],
+  s9:['Compiling outcomes…','Measuring source effectiveness…','Writing the retrospective…','Feeding lessons back to Step 1…']
+};
+let workingTimer=null;
+function stopWorking(){ if(workingTimer){ clearInterval(workingTimer); workingTimer=null; } }
+function startWorking(key){
+  stopWorking();
+  const msgs=WORKING_MSGS[key]; if(!msgs) return;
+  const scr=document.querySelector('#content .screen'); if(!scr) return;
+  const b=document.createElement('div'); b.className='working';
+  b.innerHTML='<span class="work-orb"></span><div class="work-txt"><b>Agent working</b> · <span id="workmsg">'+msgs[0]+'</span></div><span class="work-dots"><i></i><i></i><i></i></span>';
+  scr.insertBefore(b, scr.firstChild);
+  const card=scr.querySelector('.card'); if(card) card.classList.add('scanning');
+  let i=0;
+  workingTimer=setInterval(()=>{
+    i=(i+1)%msgs.length;
+    const el=document.getElementById('workmsg'); if(!el){ stopWorking(); return; }
+    el.style.opacity=0;
+    setTimeout(()=>{ if(document.getElementById('workmsg')){ el.textContent=msgs[i]; el.style.opacity=1; } }, 180);
+  }, 2300);
+}
+/* Timed "the agent is changing the page" sequences */
+let fxTimers=[];
+function later(fn,ms){ const t=setTimeout(fn,ms); fxTimers.push(t); return t; }
+function clearFX(){ fxTimers.forEach(clearTimeout); fxTimers=[]; stopWorking(); }
+function revealSeq(nodes, gap){
+  nodes.forEach(n=>{ n.style.opacity=0; n.style.transform='translateY(7px)'; });
+  nodes.forEach((n,i)=>later(()=>{ n.style.transition='opacity .4s,transform .4s'; n.style.opacity=1; n.style.transform='none'; }, i*gap));
+}
+const EXEC_LINES=[
+  ['✉','Outreach sent to Marcus Lee'],
+  ['💬','Ana Ferreira replied — interested'],
+  ['📅','AI screening scheduled · D. Okoro'],
+  ['🔗','Referral link opened by A. Rao'],
+  ['♻','3 profiles refreshed & re-ranked'],
+  ['✉','Outreach sent to 2 more candidates'],
+  ['🏅','New silver-medalist surfaced'],
+  ['💬','Internal candidate asked about the role'],
+  ['✅','Marcus Lee moved to Qualified'],
+  ['📅','Panel slot proposed · Thu 10:00 PST']
+];
+function execFeed(scr){
+  const ul=scr.querySelector('#execfeed'); if(!ul) return;
+  let i=0;
+  const push=()=>{
+    if(!document.body.contains(ul)) return;
+    const [ic,txt]=EXEC_LINES[i%EXEC_LINES.length]; i++;
+    const li=document.createElement('li'); li.className='feedline';
+    li.innerHTML='<span class="fdot"></span><span class="fic">'+ic+'</span><span>'+txt+'</span><span class="ftime">just now</span>';
+    ul.insertBefore(li, ul.firstChild);
+    Array.from(ul.children).forEach((c,idx)=>{ if(idx>0){ const t=c.querySelector('.ftime'); if(t) t.textContent=idx+'s ago'; } });
+    while(ul.children.length>6) ul.removeChild(ul.lastChild);
+    later(push, 1150);
+  };
+  push();
+}
+function qualifyFlip(scr){
+  const cells=scr.querySelectorAll('.qstatus');
+  cells.forEach(c=>{ if(!c.dataset.final) c.dataset.final=c.innerHTML;
+    c.innerHTML='<span class="tag t-grey evaluating">Evaluating…</span>'; });
+  cells.forEach((c,i)=>later(()=>{ c.innerHTML=c.dataset.final; c.classList.add('flashcell');
+    later(()=>c.classList.remove('flashcell'),1000); }, 650 + i*600));
+}
+function channelFlip(scr){
+  const cells=scr.querySelectorAll('.chstatus');
+  cells.forEach(c=>{ if(!c.dataset.final) c.dataset.final=c.innerHTML;
+    c.innerHTML='<span class="tag t-grey evaluating">Sending…</span>'; });
+  cells.forEach((c,i)=>later(()=>{ c.innerHTML=c.dataset.final; c.classList.add('flashcell');
+    later(()=>c.classList.remove('flashcell'),1000); }, 550 + i*420));
+}
+function schedCoord(scr){
+  const bubs=[...scr.querySelectorAll('.bub')].sort((a,b)=>a.dataset.seq-b.dataset.seq);
+  bubs.forEach(b=>{ b.style.opacity=0; b.style.transform='translateY(7px)'; });
+  const lock=scr.querySelector('.sched-lock'); if(lock) lock.style.opacity=0;
+  bubs.forEach((b,i)=>later(()=>{ b.style.transition='opacity .35s,transform .35s'; b.style.opacity=1; b.style.transform='none'; }, 500 + i*680));
+  if(lock) later(()=>{ lock.style.transition='opacity .45s'; lock.style.opacity=1; }, 500 + bubs.length*680 + 300);
+}
+function playScene(key){
+  const scr=document.querySelector('#content .screen'); if(!scr) return;
+  if(key==='s1') revealSeq(scr.querySelectorAll('.pill-row .chip, .pill-row .tag'), 130);
+  if(key==='s2') revealSeq(scr.querySelectorAll('tbody .qrow'), 240);
+  if(key==='s4'){ revealSeq(scr.querySelectorAll('.list-check li'), 130); execFeed(scr); }
+  if(key==='s5') qualifyFlip(scr);
+  if(key==='s6'){ channelFlip(scr); schedCoord(scr); }
+  if(key==='s9') autoSendSummary();
+}
+function runFX(key){
+  clearFX();
+  document.querySelectorAll('[data-count]').forEach(countUp);
+  const ring = document.getElementById('confring');
+  if(ring){ ring.style.transition='none'; ring.style.setProperty('--p',0);
+    requestAnimationFrame(()=>{ ring.style.transition='background 1s ease'; ring.style.setProperty('--p',82); }); }
+  if(LAYER[key]==='agent'){ startWorking(key); playScene(key); } else stopWorking();
+}
+/* auto-add gentle reveal to freshly rendered cards not already animated */
+function autoReveal(){
+  document.querySelectorAll('#content .card:not(.rise)').forEach((c,i)=>{
+    c.style.opacity=0; c.style.animation=`rise .5s cubic-bezier(.2,.7,.2,1) ${0.03*i}s forwards`;
+  });
+}
+/* demo: clearing a Needs-You item drops the counter 7 -> 6 */
+function demoResolve(){
+  const c=document.getElementById('needcount'); if(!c) return;
+  c.textContent=6; c.parentElement.classList.add('rise');
+}
+
+/* ---------- Present / record mode ---------- */
+const SCENES = [
+  ['mc',    'Meet <b>Robin</b>. 18 open roles, 400+ candidates in motion. Her AI recruiter runs everything autonomously — and surfaces only the <b>7 moments that need a human</b>.'],
+  ['overview','This is the loop running behind the scenes: <b>nine steps</b>, from a role opening to candidates <b>sourced, screened and scheduled</b>. Let\'s follow one hire — <b>Senior Backend Engineer</b>.'],
+  ['s1',    'The moment the role opens, the agent <b>reads the job</b>, learns from past hires, and predicts difficulty and time-to-fill — with a confidence score.'],
+  ['s2',    'It builds a <b>talent plan</b> across five pools — top matches, silver-medalists, internal mobility, referral champions, and external expansion only if needed.'],
+  ['s3',    'Robin sees <b>one plan</b>, not a hundred tasks. Approve all in a click — nothing sends until she says go.'],
+  ['s4',    'Approved. The agent <b>executes four tracks in parallel</b> — personalized outreach, profile refresh, referral campaigns, internal notices.'],
+  ['s5',    'As replies come in, the agent <b>qualifies and scores</b> each one: interested? qualified? needs a human?'],
+  ['s6',    'A <b>scheduling agent</b> takes over — coordinating calendars, panels, time zones and reminders, right up to the interview. The offer stays human-led.'],
+  ['s7',    'And it knows when to stop. <b>"I recommend calling this candidate."</b> Competing offers and executives get a human — Robin.'],
+  ['s8',    'It never sleeps — <b>watching pipeline health</b> and auto-recommending fixes the moment a role weakens.'],
+  ['s9',    'Role filled — <b>7 days ahead of prediction</b>. The agent writes the retrospective, <b>sends the efficiency summary to every stakeholder</b>, and feeds every lesson back to make the next hire smarter.'],
+];
+let scene = 0, presenting = false;
+function enterPresent(){
+  presenting = true; document.body.classList.add('present');
+  document.getElementById('stagebar').style.display='flex';
+  scene = 0; gotoScene(0);
+}
+function exitPresent(){
+  presenting = false; document.body.classList.remove('present');
+  document.getElementById('stagebar').style.display='none';
+  go(currentKey || 'home');
+}
+function gotoScene(i){
+  scene = Math.max(0, Math.min(SCENES.length-1, i));
+  const [key,cap] = SCENES[scene];
+  go(key);
+  document.getElementById('sccap').innerHTML = cap;
+  document.getElementById('scnum').textContent = `${String(scene+1).padStart(2,'0')} / ${SCENES.length}`;
+}
+function nextScene(){ gotoScene((scene+1) % SCENES.length); }
+function prevScene(){ gotoScene((scene-1+SCENES.length) % SCENES.length); }
+document.addEventListener('keydown', e=>{
+  if(!presenting) return;
+  if(e.key==='ArrowRight'||e.key===' ') { e.preventDefault(); nextScene(); }
+  if(e.key==='ArrowLeft') { e.preventDefault(); prevScene(); }
+  if(e.key==='Escape') exitPresent();
+});
+
+renderNav();
+go('home');
+</script>
+</body>
+</html>

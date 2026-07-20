@@ -156,14 +156,33 @@
     background:var(--purple-50);color:var(--purple-600);padding:5px 11px;border-radius:20px}
   /* ---------- Present / Record mode ---------- */
   body.present .side,body.present .topbar{display:none}
-  body.present .content{max-width:1180px;margin:0 auto;padding:44px 40px 130px;font-size:15px}
+  body.present .content{max-width:1180px;margin:0 auto 120px;padding:0;font-size:15px;
+    border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+  body.present .content .framebody{padding:36px 40px 44px}
+  /* surface chrome */
+  .chrome{display:flex;align-items:center;gap:12px;padding:10px 16px;font-size:12px;border-bottom:1px solid var(--line)}
+  .chrome .dots{display:inline-flex;gap:6px;flex:0 0 auto}
+  .chrome .dots i{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .chrome .dots i:nth-child(1){background:#FF5F57}
+  .chrome .dots i:nth-child(2){background:#FEBC2E}
+  .chrome .dots i:nth-child(3){background:#28C840}
+  .chrome.browser{background:#EEF0F5;color:var(--slate)}
+  .chrome .urlbar{flex:1;background:#fff;border:1px solid var(--line);border-radius:20px;padding:5px 13px;
+    font-size:12px;color:var(--ink);max-width:560px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chrome-tag{font-weight:800;font-size:10px;letter-spacing:.04em;padding:3px 10px;border-radius:20px;flex:0 0 auto}
+  .chrome.browser .chrome-tag{background:var(--purple-50);color:var(--purple-600)}
+  .chrome.backstage{background:#141334;color:#C9C4E6}
+  .chrome.backstage .cg{width:22px;height:22px;border-radius:6px;background:var(--violet);color:#fff;
+    display:grid;place-items:center;font-size:12px;flex:0 0 22px}
+  .chrome.backstage .ct{flex:1;font-weight:600}
+  .chrome.backstage .chrome-tag{background:rgba(255,255,255,.13);color:#C9C4E6}
   body.present .h1{font-size:30px}
   body.present .sub{font-size:16px}
   body.present .metric{font-size:34px}
   body.present .kpi .n{font-size:32px}
   body.present .qtitle{font-size:15px}
   body.present .backbar{display:none}
-  body.present{background:radial-gradient(1200px 600px at 50% -5%,#E6F7F2,var(--bg))}
+  body.present{background:radial-gradient(1200px 720px at 50% -12%,#241F52,#0B0A1C)}
   .stagebar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:none;
     background:rgba(20,19,52,.96);color:#fff;backdrop-filter:blur(10px);
     padding:15px 30px;align-items:center;gap:24px}
@@ -524,9 +543,6 @@
     <div class="content" id="content"></div>
   </div>
 </div>
-
-<!-- Persistent layer badge: who is acting -->
-<div id="layerbadge"><span class="pip"></span><span id="layertext"></span></div>
 
 <!-- Context modal -->
 <div class="modal-back" id="modalback" onclick="if(event.target===this)closeModal()"><div class="modal" id="modal"></div></div>
@@ -1547,13 +1563,28 @@ function renderNav(){
        <span>${s.title}</span>
      </li>`).join('');
 }
+const SURFACE_URL={home:'app.eightfold.ai',overview:'app.eightfold.ai/flow',mc:'app.eightfold.ai/mission-control',
+  s3:'app.eightfold.ai/req/ENG-4471/review',s7:'app.eightfold.ai/req/ENG-4471/needs-attention'};
+function surfaceType(key){ return LAYER[key]==='agent' ? 'backstage' : 'browser'; }
+function chromeBar(key){
+  if(surfaceType(key)==='backstage')
+    return `<div class="chrome backstage"><span class="cg">⚙</span><span class="ct">Agent — working in the background · the recruiter never sees this screen</span><span class="chrome-tag">not a user view</span></div>`;
+  const url=SURFACE_URL[key]||'app.eightfold.ai';
+  return `<div class="chrome browser"><span class="dots"><i></i><i></i><i></i></span><span class="urlbar">🔒 ${url}</span><span class="chrome-tag">👤 Recruiter · in browser</span></div>`;
+}
 function go(key){
   const step = STEPS.find(s=>s.key===key);
   const c = document.getElementById('content');
-  if(key==='home'){ c.innerHTML = landing(); }
-  else if(key==='mc'){ c.innerHTML = S.mc(); }
-  else if(key==='overview'){ c.innerHTML = overview(); }
-  else { c.innerHTML = navBar(step) + `<div class="screen on">${S[key]()}</div>`; }
+  let inner;
+  if(key==='home'){ inner = landing(); }
+  else if(key==='mc'){ inner = S.mc(); }
+  else if(key==='overview'){ inner = overview(); }
+  else { inner = navBar(step) + `<div class="screen on">${S[key]()}</div>`; }
+  if(presenting){
+    c.className='content framed'; c.innerHTML = chromeBar(key) + `<div class="framebody">${inner}</div>`;
+  } else {
+    c.className='content'; c.innerHTML = inner;
+  }
   document.querySelectorAll('#nav li').forEach(li=>li.classList.toggle('active', li.dataset.key===key));
   document.getElementById('crumb').innerHTML =
       key==='home' ? '<b>Welcome</b>'
@@ -1593,12 +1624,8 @@ const LAYER_TXT = {
 };
 let currentKey = 'mc', viewMode = 'agent';
 function updateBadge(key){
-  const layer = LAYER[key];
   const b = document.getElementById('layerbadge');
-  if(!layer){ b.className=''; return; }
-  const [cls,txt] = LAYER_TXT[layer];
-  b.className = 'show '+cls;
-  document.getElementById('layertext').textContent = txt;
+  if(!b) return; // badge removed — surface chrome now conveys agent vs. recruiter
 }
 function setView(mode){
   viewMode = mode;
@@ -1768,6 +1795,7 @@ function enterPresent(){
 function exitPresent(){
   presenting = false; document.body.classList.remove('present');
   document.getElementById('stagebar').style.display='none';
+  go(currentKey || 'home');
 }
 function gotoScene(i){
   scene = Math.max(0, Math.min(SCENES.length-1, i));
